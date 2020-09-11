@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="us">
+	<head>
+		<meta charset="utf-8"/>
+
+		<title>tS Mission List</title>		
+		
+		<link rel="stylesheet" href="src/style.css">
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+		<script src="src/MissionInfo.txt"></script>
+		<script src="src/app.js"></script>
+	</head>
+	<body>
+		<div id="popup" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<span class="modal-guid"></span>
+				<h1>Example mission</h1>
+				<p class="modal-terrain">at Example terrain</p>
+				<p class="modal-tags"></p>
+				<img width="256px" src="" />
+				<p class="modal-briefing">Example text</p>
+				<span class="close">&times;</span>
+			</div>
+		</div>
+	
+		<div id="header">
+			<div id="header-title">
+				<span>tS</span> <tt id='header-sans'>Доступные операции</tt>
+			</div>
+		</div>
+
+		<div id="wrapper">
+			<div max-width="512px">
+				<table id="grid-filter">
+					<tr>
+						<th class="clickable" colspan="2">Filters</th>
+					</tr>
+					<tr class="filter-line">
+						<td>By mission name</td>
+						<td filter-type="title" class="td-filter-inputs"><input type="text" /></td>
+					</tr>
+					<tr class="filter-line">
+						<td>By terrain name</td>
+						<td filter-type="terrain" class="td-filter-inputs">
+							<select></select>
+						</td>
+					</tr>
+					<tr class="filter-line">
+						<td>By slots, &gt;=</td>
+						<td filter-type="slots-gte" class="td-filter-inputs"><input type="number" /></td>
+					</tr>
+					<tr class="filter-line">
+						<td>By slots, &lt;= </td>
+						<td filter-type="slots-lte" class="td-filter-inputs"><input type="number" /></td>
+					</tr>
+					<tr class="filter-line">
+						<td>By tags</td>
+						<td filter-type="tags" class="td-filter-inputs"></td>
+					</tr>
+					<tr style="text-align: right" class="filter-line">
+						<td colspan="2" >
+							<button id="btn-filter-url" class="btn-filter" title="Copy URL">Copy</button>
+							<button id="btn-reset-filter" class="btn-filter">Reset</button>
+							<button id="btn-filter" class="btn-filter btn-filter-100">Filter</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<table id="grid">
+					<tr>
+						<th class="th-w clickable" column_name="title" sortable="true">Name</th>
+						<th class="th-n clickable" column_name="player_count" sortable="true">Slots</th>
+						<th class="th-n clickable" column_name="terrain" sortable="true">Terrain</th>
+						<th class="clickable" column_name="overview" sortable="true">Overview</th>
+						<th class="th-a" column_name="tags" sortable="false">Tags</th>
+						<th class="th-a" column_name="briefing" sortable="false">Briefing</th>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+
+	</body>
+</html>

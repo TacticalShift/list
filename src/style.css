@@ -1,0 +1,223 @@
+body {
+	margin: 0px;
+	font-family: sans-serif;
+	background-color: #ececec;
+	overflow: auto;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+/* Header
+*/
+
+@font-face {
+    font-family: "tSFont";
+    src: url(tS_EL.otf);
+}
+
+#header {
+	margin: 0px;
+	padding: 0px;
+	background-color: #252525;
+	color: white;
+}
+
+#header-sans {
+	font-family: sans-serif;
+	font-weight: 100;
+	font-size: 21px;
+	line-height: 45px;
+}
+
+#header-title {
+	font-size: 24px;
+	padding-left: 40px;
+	font-family: "tSFont";
+}
+
+#header-title span {
+	background-color: #c52334;
+	padding: 0px 4px;
+	border-radius: 0px 8px 8px 8px;
+}
+
+/* Grid
+*/
+#wrapper {
+	padding: 5px;
+}
+
+#grid {
+	border-collapse: collapse;
+	border: 1px solid #999999;
+	width: 100%;
+}
+
+#grid th {
+	background-color: #cccccc;
+	border: 1px solid #777777;
+	height: 30px;
+	padding: 10px 5px 10px 5px;
+}
+
+#grid tr:hover {
+	background-color: #cccccc;
+}
+
+.th-w {
+	min-width: 50px;
+}
+
+.th-a {
+	max-width: 50px;
+	padding: 10px 2px 10px 2px;
+}
+
+.th-n {
+	max-width: 20px;
+	padding: 10px 2px 10px 2px;
+}
+
+td {
+	padding: 10px 5px 10px 5px;
+	border: 1px solid #999999;
+}
+
+.td-center {
+	text-align: center;
+}
+
+.td-overview {
+	max-width: 300px;
+	white-space: wrap;
+}
+
+.td-tags {
+	max-width: 80px;
+	text-align: center;
+}
+
+.tag {
+	color: whitesmoke;
+	font-family: monospace;
+	padding: 2px;
+	margin: 1px;
+	border-radius: 7px;
+	text-align: center;
+}
+
+.btn-see-more {
+	color: #252525;
+	cursor:pointer;
+}
+
+.btn-see-more:hover {
+	background-color: #c52334;
+	color: white;
+}
+
+/* Filter
+*/
+#grid-filter {
+	margin-top: 25px;
+	margin-bottom: 25px;
+
+	border-collapse: collapse;
+	border: 1px solid #999999;
+}
+
+#grid-filter th {
+	height: 25px;
+	font-weight: 600;
+
+	background-color: #cccccc;
+	padding: 5px;
+}
+
+.filter-active {
+	color: #ffffff;
+	background-color: #e22a42 !important;
+}
+
+.filter-line {
+}
+
+.td-filter-inputs {
+	width: 200px;
+	padding: 5px;
+}
+
+.td-filter-inputs select {
+	width: 173px;
+}
+
+.td-filter-tag {
+	display: inline-block;	
+}
+
+.td-inactive-tag {
+	color: #333!important;
+	background-color: #cbcbcb!important;
+}
+
+.btn-filter {
+	height: 30px;
+	cursor: pointer;
+}
+
+.btn-filter-100 {
+	
+	width: 100px;
+}
+
+
+/* Modal 
+*/
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.modal-guid {
+	font-size: 12px;
+	color: #646464;
+}
+
+/* The Close Button */
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 75px;
+	font-weight: bold;
+	
+	position: fixed;
+	top: 200px;
+	right: 150px;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
