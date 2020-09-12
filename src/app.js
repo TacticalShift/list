@@ -253,13 +253,8 @@ var GridViewClass = function () {
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
-
-		if (model.isFiltered()) {
-			$(this.$filter_head).toggleClass("filter-active", true);
-		} else {
-			$(this.$filter_head).toggleClass("filter-active", false);
-			this.filter_resetFilter();
-		}
+		
+		let gridSize = 0;
 
 		while (model.hasNext()) {
 			let info = model.next();
@@ -275,6 +270,17 @@ var GridViewClass = function () {
 				+ `<td class="td-tags">${tags}</td>`
 				+ `<td class="td-center btn-see-more">⇱ Details</td>`
 			+ "</tr>");
+			
+			++gridSize;
+		}
+		
+		if (model.isFiltered()) {
+			$(this.$filter_head).toggleClass("filter-active", true);
+			$(this.$filter_head).html("Filtered (" + gridSize + ")");
+		} else {
+			$(this.$filter_head).toggleClass("filter-active", false);
+			$(this.$filter_head).html("Filters");
+			this.filter_resetFilter();
 		}
 
 		this.header_showSortedIcon(model.sortedBy.field, model.sortedBy.order);
@@ -412,6 +418,23 @@ var GridControllerClass = function () {
 				controller.filtersCollapsed = !controller.filtersCollapsed; // Toggle filter collapsed
 				$(controller.$filter_lines).each(function () { $(this).css("display",  controller.filtersCollapsed ? "none" : "") })
 			});
+			
+			$(this.$filter_byTitle).on("change",  this, function (event) {
+				let controller = event.data;
+				controller.executeFiltering();
+			});
+			$(this.$filter_byTerrain).on("change",  this, function (event) {
+				let controller = event.data;
+				controller.executeFiltering();
+			});
+			$(this.$filter_bySlotsFrom).on("change",  this, function (event) {
+				let controller = event.data;
+				controller.executeFiltering();
+			});
+			$(this.$filter_bySlotsTo).on("change",  this, function (event) {
+				let controller = event.data;
+				controller.executeFiltering();
+			});
 
 			$(this.$filter_tags).on("click", this, function (event) {
 				if (event.target.id == "") { return };
@@ -425,11 +448,8 @@ var GridControllerClass = function () {
 			});
 			
 			$(this.$filter_doFilter).on("click", this, function (event) {
-				let model = event.data.model;
 				let controller = event.data;
-				let params = controller.collectFilterParams();
-				
-				model.filterBy(params);
+				controller.executeFiltering();
 			})
 
 			$(this.$filter_resetFitler).on("click", this, function (event) {
@@ -473,6 +493,11 @@ var GridControllerClass = function () {
 			let tagname = event.target.innerText;
 			controller.updateAndFilter({"tags": [tagname]});
 		});
+	};
+	
+	this.executeFiltering = function () {
+		let params = this.collectFilterParams();
+		this.model.filterBy(params);
 	};
 	
 	this.collectFilterParams = function () {
