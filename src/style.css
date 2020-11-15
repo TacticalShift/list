@@ -223,6 +223,8 @@ td {
 	position: fixed;
 	top: 200px;
 	right: 170px;
+	
+	transition: transform  0.2s;
 }
 
 .close:hover,
@@ -230,6 +232,7 @@ td {
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
+	transform: rotate(-90deg);
 }
 
 .random {
@@ -241,6 +244,8 @@ td {
 	position: fixed;
 	top: 210px;
 	right: 120px;
+	
+	transition: transform  0.4s;
 }
 
 .random:hover,
@@ -248,4 +253,5 @@ td {
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
+	transform: rotate(360deg);
 }
