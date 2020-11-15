@@ -126,6 +126,8 @@ td {
 
 	border-collapse: collapse;
 	border: 1px solid #999999;
+	
+	min-width: 400px;
 }
 
 #grid-filter th {
@@ -142,6 +144,7 @@ td {
 }
 
 .filter-line {
+	display: none;
 }
 
 .td-filter-inputs {
@@ -202,6 +205,14 @@ td {
 	color: #646464;
 }
 
+#overview_img {
+	display: block;
+	margin-bottom: 10px;
+	max-height: 256px;
+	max-width: 512px;
+	border-radius: 16px;
+}
+
 /* The Close Button */
 .close {
 	color: #aaa;
@@ -211,7 +222,7 @@ td {
 	
 	position: fixed;
 	top: 200px;
-	right: 150px;
+	right: 170px;
 }
 
 .close:hover,
@@ -221,3 +232,20 @@ td {
 	cursor: pointer;
 }
 
+.random {
+	color: #aaa;
+	float: right;
+	font-size: 50px;
+	font-weight: bold;
+	
+	position: fixed;
+	top: 210px;
+	right: 120px;
+}
+
+.random:hover,
+.random:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}

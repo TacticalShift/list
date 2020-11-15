@@ -11,17 +11,20 @@
 		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 		crossorigin="anonymous"></script>
 		<script src="MissionInfo.txt"></script>
+		<script src="src/validator.js"></script>
 		<script src="src/app.js"></script>
 	</head>
 	<body>
 		<div id="popup" class="modal">
 			<div class="modal-content">
-				<span class="close">&times;</span>
+				<span class="close" title="Close">&times;</span>
+				<span class="random" title="Open random mission">߷</span>
 				<span class="modal-guid"></span>
 				<h1>Example mission</h1>
 				<p class="modal-terrain">at Example terrain</p>
 				<p class="modal-tags"></p>
-				<img width="256px" src="" />
+				<img id="overview_img" src="" />
+				<img id="map_shot" width="256px" src="" />
 				<p class="modal-briefing">Example text</p>
 				<span class="close">&times;</span>
 			</div>
@@ -63,6 +66,7 @@
 					</tr>
 					<tr style="text-align: right" class="filter-line">
 						<td colspan="2" >
+							<button id="btn-filter-random" class="btn-filter" title="Random">Random</button>
 							<button id="btn-filter-url" class="btn-filter" title="Copy URL">Copy</button>
 							<button id="btn-reset-filter" class="btn-filter">Reset</button>
 							<button id="btn-filter" class="btn-filter btn-filter-100">Filter</button>

@@ -130,6 +130,7 @@ var GridModelClass = function (data) {
 	};
 	
 	this.resetFilter = function () {
+		this.filtered = [];
 		this.filteredOut = [];
 		this.resetIterator();
 	};
@@ -159,6 +160,22 @@ var GridModelClass = function (data) {
 			this.filter.terrainValues = terrains;
 			this.filter.tagsValues = tags;
 		};
+	};
+
+	this.selectRandomFiltered = function (filterData) {
+		this.filterBy(filterData);
+		
+		let items = [];		
+		this.resetIterator();
+		while (this.hasNext()) { items.push(this.next()); }
+		
+		items = items.filter(function (value, indx, arr) { 
+			return !(value.tags.includes("FIX NEEDED")) 
+		});
+		if (items.length == 0) { return; };
+		
+		let item = items[Math.floor(Math.random() * items.length)];
+		this.refreshMissionDetails(item.id);	
 	};
 
 	/* Update view */
@@ -344,7 +361,8 @@ var GridViewClass = function () {
 		$(`${this.$popup} p[class='modal-terrain']`).text("at " + data.terrain + " | " + data.player_count + " slots");
 		$(`${this.$popup} span[class='modal-guid']`).text("[GUID:" + data.id + "][Filename:" + data.filename + "]");
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false));
-		$(`${this.$popup} img`).attr("src", data.map_shot);
+		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
+		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
 		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing);
 		$(this.$popup).css("display","block");
 	}
@@ -377,16 +395,18 @@ var GridControllerClass = function () {
 	this.filtersCollapsed = true;
 
 	this.$grid_sortable = "#grid th[sortable='true']";
-	this.$btn_popupClose = "#popup span[class='close'";
+	this.$btn_popupClose = "#popup span[class='close']";
+	this.$btn_popupRandom = "#popup span[class='random']";
 	this.$btn_seeMore = "#grid tr td[class*='btn-see-more']";
 	this.$btn_terrain = "#grid tr td[filter-type='terrain']";
 	this.$btn_tags = "#grid tr td p[class='tag clickable']";
 
 	this.$filter_head = "#grid-filter tr th";
 	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
+	this.$filter_random = "#btn-filter-random";
 	this.$filter_copyURL = "#btn-filter-url";
-	this.$filter_doFilter = "#btn-filter";
 	this.$filter_resetFitler = "#btn-reset-filter";
+	this.$filter_doFilter = "#btn-filter";
 	this.$filter_lines = ".filter-line";
 
 	this.$filter_byTitle = "td[filter-type='title'] input";
@@ -416,7 +436,11 @@ var GridControllerClass = function () {
 			$(this.$filter_head).on("click", this, function (event) {
 				let controller = event.data;
 				controller.filtersCollapsed = !controller.filtersCollapsed; // Toggle filter collapsed
-				$(controller.$filter_lines).each(function () { $(this).css("display",  controller.filtersCollapsed ? "none" : "") })
+				if (controller.filtersCollapsed) {
+					$(controller.$filter_lines).fadeOut(250);
+				} else {
+					$(controller.$filter_lines).fadeIn(250);
+				}
 			});
 			
 			$(this.$filter_byTitle).on("change",  this, function (event) {
@@ -462,10 +486,18 @@ var GridControllerClass = function () {
 				controller.copyFilteredURL();
 			});
 			
+			$(this.$filter_random).on("click", this, function (event) {
+				let controller = event.data;
+				controller.filterAndSelectRandom();
+			});
 			/* Modal window */
 			$(this.$btn_popupClose).on("click", this, function (event) {
 				let model = event.data.model;
 				model.refreshMissionDetails(-1);
+			})
+			$(this.$btn_popupRandom).on("click", this, function (event) {
+				let controller = event.data;
+				controller.filterAndSelectRandom();
 			})
 
 			this.headerEventsSet = true;
@@ -646,6 +678,17 @@ var GridControllerClass = function () {
 		
 		this.model.updateURL("");
 		this.updateAndFilter(params);
+	};
+
+	this.filterAndSelectRandom = function () {
+		let params = this.collectFilterParams();
+		
+		if (params.hasOwnProperty("tags")) {
+			let indx = params.tags.indexOf("FIX NEEDED");
+			if (indx > -1) { params.tags.splice(indx,1); }
+		}
+		
+		this.model.selectRandomFiltered(params);
 	};
 }
 
