@@ -37,17 +37,18 @@ var missionsInfo = [
 	map_shot: "",
 	overview_img: "imgs/CO29_Pudonnut_lintu_1A.ruha_overview.jpg"
 }
-,{
-	id: 1299673716,
-	filename: "BLITZ12_Dusk_Party_1A.Kunduz",
-	title: "BLITZ12 Dusk Party",
-	player_count: 16,
+,
+{
+	id: 1146891244,
+	filename: "BLITZ18_Dusk_Party_1C.Kunduz",
+	title: "BLITZ18 Dusk Party (1C)",
+	player_count: 18,
 	terrain: "Kunduz",
-	tags: ["SPECOPS"],
-	overview: "Czesh Special Forces provides force recon operation to destroy cache",
+	tags: ["SPECOPS","INFANTRY"],
+	overview: "Спецназ Чешской армии проводит операцию по поиску и уничтожению схронов оружтя",
+	overview_img: "imgs/BLITZ18_Dusk_Party_1C.Kunduz_overview.jpg",
 	briefing: "<br /><br />I. Обстановка:<br />Талибан продолжает свою активность в провинции. Мы получили информацию, что недавно сюда прибыла крупная партия оружия и поставки все еще идет.<br /><br />Сегодня ночью должна состоятся очередная встреча между талибами и местными коллаборационистами, и это отличный шанс получить больше информации и накрыть сам склад.<br /><br />А. Враждебные силы:<br />Талибан, легкая пехота<br /><br />Б. Дружественные силы:<br />Спецназ ACR:<br />  - Dýka, 9 человек<br />  - Břitva, 9 человек<br /><br /><br />II. Задание:<br />1. Зачистить Obj.Pivo<br />2. Найти информацию о местоположении склада<br />3. Найти склад и уничтожить ящики с оружием/боеприпасами<br /><br /><br />III. Выполнение:<br />Первым делом зачистите Obj.Pivo и осмотритесь в поисках информации. В теории у местных должны быть какие-то карты с точками доставки - найдите их.<br /><br />Если вы сможете обнаружить местоположение склада - атакуйте немедленно и взорвите там все к чертям.<br /><br />Постарайтесь не уничтожить встреченные автомобили, они могут вам понадобиться.<br /><br />IV. Поддержка:<br />Нет<br /><br />V. Сигналы:<br />PL NET 50<br />1'1 - SR CH 1<br />1'2 - SR CH 2<br /><br />VI. Замечания:<br />Powered by Tactical Shift Framework<br /><br />VII. Замечания для GSO:<br />- Нет",
-	map_shot: "",
-	overview_img: ""
+	map_shot: ""
 }
 ,{
 	id: 1147551546,
