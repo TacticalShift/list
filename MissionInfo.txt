@@ -524,7 +524,7 @@ var missionsInfo = [
 	title: "CO18 Спасение пилота",
 	player_count: 18,
 	terrain: "Takistan",
-	tags: ["SPECOPS"],
+	tags: ["SPECOPS","FIX NEEDED"],
 	overview: "Спасение пилота сбитого истребителя",
 	briefing: "&lt;no data&gt;",
 	map_shot: "",
