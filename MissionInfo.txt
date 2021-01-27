@@ -440,7 +440,7 @@ var missionsInfo = [
 	title: "CO18 Pilot Rescue v2",
 	player_count: 18,
 	terrain: "Zargabad",
-	tags: [],
+	tags: ["FIX NEEDED"],
 	overview: "Взвод ВДВ должен спасти захваченного пилота и уничтожить БТР",
 	briefing: "&lt;no data&gt;",
 	map_shot: "",
