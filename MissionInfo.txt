@@ -1,10 +1,10 @@
 var missionsInfo = [
 {
 	id: 2100281532,
-	filename: "CO18_Afghan_House_Party.clafghan-main",
+	filename: "CO18_Afghan_House_Party.clafghan",
 	title: "CO18 Afghan House Party ",
 	player_count: 18,
-	terrain: "Clafghan-main",
+	terrain: "Clafghan",
 	tags: ["SPECOPS","JTAC/CAS"],
 	overview: "Soviet special forces assault fortified position of modjaheds",
 	overview_img: "imgs/CO18_Afghan_House_Party.clafghan-main_overview.jpg",
@@ -61,10 +61,10 @@ var missionsInfo = [
 }
 ,{
 	id: 482713961,
-	filename: "CO20_Thatcher_line_Zabavne_obrazky.ruha-main",
+	filename: "CO20_Thatcher_line_Zabavne_obrazky.ruha",
 	title: "CO20_Thatcher_line_Zábavné_obrázky",
 	player_count: 20,
-	terrain: "Ruha-main",
+	terrain: "Ruha",
 	tags: ["SPECOPS"],
 	overview: "Czech special forces try to find intel on fortifications",
 	overview_img: "imgs/CO20_Thatcher_line_Zabavne_obrazky.ruha-main_overview.jpg",
@@ -1118,10 +1118,10 @@ var missionsInfo = [
 }
 ,{
 	id: 725659070,
-	filename: "CO22_Ethnic_Relations.Chernarus_Summer",
+	filename: "CO22_Ethnic_Relations.Chernarus_summer",
 	title: "CO22 Ethnic Relations 2003",
 	player_count: 22,
-	terrain: "Chernarus_Summer",
+	terrain: "Chernarus_summer",
 	tags: ["INFANTRY","MOUT","FIX NEEDED"],
 	overview: "(обновить фреймворк, мало ботов, нет ААРов)",
 	briefing: "<br /><br />I. Обстановка:<br />2003 год, Вилаят Татарстан. По информации местной разведки, русские организовали концентрационный лагерь для мирных (и не только) жителей, исповедующих ислам. Подразделениям бундесвера в составе TATFOR поручено провести штурм лагеря, подавив в нём любое сопротивление и вывести заложников.<br /><br />А. Враждебные силы:<br />Неустановленное число русских националистов и им сочувствующих.<br /><br />Б. Дружественные силы:<br />2 отряда арийского спецназа.<br /><br />II. Задание:<br />1. Захватить лагерь около Zelenogorsk<br />2. Эвакуировать заложников на FOB ARIAN<br /><br /><br />III. Выполнение:<br />По плану командира.<br /><br />IV. Поддержка:<br />2 бронемашины, 2 мерседеса, переделанных из Лэнд Роверов.<br /><br />V. Сигналы:<br />LR CH 50<br />1'1 CH 1<br />1'2 CH 2<br /><br />VI. Замечания:<br />P-p-p-powered by 10Dozen not working scripts!",
@@ -1286,10 +1286,10 @@ var missionsInfo = [
 }
 ,{
 	id: 1179572947,
-	filename: "CO22_War_Crimes.Chernarus_Summer",
+	filename: "CO22_War_Crimes.Chernarus_summer",
 	title: "CO22_War_Crimes",
 	player_count: 22,
-	terrain: "Chernarus_Summer",
+	terrain: "Chernarus_summer",
 	tags: ["INFANTRY","RolePlay","FIX NEEDED"],
 	overview: "",
 	briefing: "<br /><br />I. Обстановка:<br />  Косово, 2014 год. В непризнанной Сербией стране снова разгорелся межэтнический конфликт. KFOR реорганизован и теперь пытается установить мир в неспокойном регионе. Грузинские миротворцы в составе ООН расквартированы на FOB Хачапури и проводят операции в своём секторе. <br />  Сегодня утром мы зафиксировали взрыв в н.п. Vybor. По данным авиаразведки уничтожена мечеть, причём взрыв повлёк большие жертвы, так как был совершён во время молитвы. Мы не можем оставить это дело просто так... поэтому мы привлекли к работе профессионального журналиста (у него 500 подписчиков в инсте, можно доверять), который сфотографирует жертв этой ужасной трагедии в неестественных и ужасающих состояниях, вызывающих шок у неподготовленных зрителей. Тем самым мы обеспечим себе ещё большую поддержку со стороны наших союзников в НАТО и может быть, богатые спонсоры купят для грузинской армии побольше M4. Кстати, забота о раненых не наша проблема, поэтому игнорируйте истошные вопли страдающих и призывы о помощи. Им кто-нибудь поможет, но это точно будем не мы.<br /><br />А. Враждебные силы:<br />Неизвестно, но мы ожидаем большое количество вооружённых сербских националистов в окрестностях Vybor. Незначительные силы сербов могут находиться у н.п. Rogovo и Pogorevka.<br /><br />Б. Дружественные силы:<br />Два отряда грузинских миротворцев.<br /><br />II. Задание:<br />1. Найти журналиста в деревне Myshkino, где он гостит у своей бабушки<br />2. Отвезти журналиста на место съёмок в н.п. Vybor<br />3. После окончания съёмок доставьте журналиста на FOB Хачапури<br /><br />III. Выполнение:<br />По плану командира<br /><br />IV. Поддержка:<br />2 HMMWV<br />2 HMMWV (M2)<br /><br />V. Сигналы:<br />PL/SL NET CH1<br />1'1 CH1<br />1'2 CH2<br /><br />VI. Замечания:<br />Powered by 120's magic and VonScheer's imagination. ",
@@ -2246,10 +2246,10 @@ var missionsInfo = [
 }
 ,{
 	id: 1497214908,
-	filename: "UN_injustice_1b.Chernarus_Summer",
+	filename: "UN_injustice_1b.Chernarus_summer",
 	title: "ADV32 UN Injustice",
 	player_count: 35,
-	terrain: "Chernarus_Summer",
+	terrain: "Chernarus_summer",
 	tags: [],
 	overview: "",
 	briefing: "<br /><br />I. Обстановка:<br />Описание ситуации<br /><br />А. Враждебные силы:<br />Описание вражеских сил<br /><br />Б. Дружественные силы:<br />Описание дружественных сил<br /><br />II. Задание:<br />Описание задач<br /><br />III. Выполнение:<br />Описание указаний по выполнению<br /><br />IV. Поддержка:<br />Доступная поддержка<br /><br />V. Сигналы:<br />Сигналы и радива<br /><br />VI. Замечания:<br />Прочие замечания",
