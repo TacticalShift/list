@@ -5,6 +5,7 @@ import glob
 import subprocess
 import shutil
 import json
+import re
 import hashlib
 
 SETTINGS_FILE = "settings.ini"
@@ -23,6 +24,25 @@ CACHED_FILE_EXTENSION = "json"
 IMAGE_FILE_EXTENSION = "jpg"
 
 OUTPUT_LIST_FILE = "MissionsInfo.js"
+
+MISSION_FILE = "mission.sqm"
+BRIEFING_FILE = ("dzn_tSFramework", "Modules", "Briefing", "tSF_briefing.sqf")
+
+PLAYER_COUNT_MISSION_NAME_PATTERN = r'^(co|CO)(\d+)'
+MISSION_FILE_DATA = {
+    "title": r'briefingName="(.*)"',
+    "overview": r'overviewText=\"(.*)\"',
+    "author": r'author=\"(.*)\"',
+    "max_players": r'maxPlayers=(.*);',
+    "year": r'year=(.*);'
+}
+
+BRIEFING_FILE_DATA = {
+    "tags": r'TAGS\(\[(.*)\]\);',
+    "topic": r'TOPIC\("(.*)"\);',
+    "topic_start": "TOPIC",
+    "topic_end": "END"
+}
 
 
 def read_settings():
@@ -145,12 +165,17 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
     def read_mission_data(mission_dir, overview_image_path, add_fix_needed_tag):
         """Reads mission data"""
         mission_filename = os.path.basename(mission_dir)
+        player_count = re.compile(PLAYER_COUNT_MISSION_NAME_PATTERN).search(mission_filename)
+        if player_count:
+            player_count = int(player_count.group(2))
+
         overview_image_filename = os.path.basename(overview_image_path)
         mission_data = {
             "id": hashlib.md5(mission_filename.encode('utf-8')).hexdigest(),
             "filename": mission_filename,
             "title": "",
-            "player_count": 0,
+            "author": "Unknown",
+            "player_count": player_count,
             "terrain": mission_filename.rsplit('.', maxsplit=1)[-1],
             "tags": [],
             "overview": "",
@@ -163,6 +188,11 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
             mission_data['tags'].append(FIX_NEEDED_TAG)
 
         # TODO : Read stuff
+        with open(os.path.join(mission_dir, MISSION_FILE), 'r', encoding='utf-8') as sqm:
+            for line in sqm.readlines():
+                pass
+
+
 
         return mission_data
 
@@ -202,7 +232,8 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
         # Delete folder
         print(f"Going to delete directory {unpacked_dir}")
-        # shutil.rmtree(unpacked_dir)
+        shutil.rmtree(unpacked_dir)
+
 
 def compose_mission_list(cache_dir, output_dir, default_content_dir):
     """Reads all files in cache dir and collect data into one structure.
@@ -221,7 +252,7 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
         print("Reading file:")
         print(filename)
         filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
-        with open(filename, 'r') as cached_file:
+        with open(filename, 'r', encoding='utf-8') as cached_file:
             file_content = json.load(cached_file)
             totals.append(file_content)
 
@@ -231,7 +262,7 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
         shutil.rmtree(img_dir)
 
     # Compose and write data to single file
-    with open(output_filename, 'w') as f:
+    with open(output_filename, 'w', encoding='utf-8') as f:
         f.write('var MissionInfo = ')
         f.write(json.dumps(totals, indent=4))
 
@@ -256,7 +287,9 @@ def main():
     output_dir = settings['General']['output_dir']
     default_content_dir = settings['General']['default_content_dir']
 
-    if not check_dirs_exists(src_dir, cache_dir, output_dir, default_content_dir):
+    if not check_dirs_exists(
+        src_dir, cache_dir, output_dir, default_content_dir
+    ):
         return 2
 
     # Look for new missions and parse 'em
