@@ -155,16 +155,21 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
         return os.path.join(cache_dir, f)
 
-    def copy_overview_picture(from_dir, to_dir, filename):
+    def copy_overview_picture(from_dir, to_dir, default_content_dir, filename):
         to_dir = os.path.join(to_dir, OVERVIEW_IMAGE_DIR)
         if not os.path.exists(to_dir):
             os.mkdir(to_dir)
 
         image_file = os.path.join(
             to_dir,
-            f"{filename}.{OVERVIEW_IMAGE.rsplit('.', maxsplit=1)[-1]}"
+            f"{filename}.{IMAGE_FILE_EXTENSION}"
         )
-        shutil.copyfile(os.path.join(from_dir, OVERVIEW_IMAGE), image_file)
+
+        target_img = os.path.join(from_dir, OVERVIEW_IMAGE)
+        if not os.path.exists(target_img):
+            target_img = os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE)
+
+        shutil.copyfile(target_img, image_file)
         return image_file
 
     def read_mission_data(mission_dir, overview_image_path, add_fix_needed_tag):
@@ -212,9 +217,9 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
         """Parses mission.sqm file and gather data from it"""
         player_count_max_players = 0
         player_count_mission_name = 0
-        year = 0
-        month = 0
-        day = 0
+        year = ''
+        month = ''
+        day = ''
         with open(path_to_missionsqm, 'r', encoding='utf-8') as sqm:
             scenario_data_found = False
             for line in sqm.readlines():
@@ -232,31 +237,44 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
                     mission_name_regex = PLAYER_COUNT_MISSION_NAME_REGEX.search(line_value)
                     if mission_name_regex:
                         player_count_mission_name = int(mission_name_regex.group(2))
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['author']):
                     mission_data['author'] = line_value
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['overview']):
                     mission_data['overview'] = line_value
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['max_players']):
                     player_count_max_players = int(line_value)
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['year']):
                     year = line_value
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['month']):
                     month = line_value
+                    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['day']):
                     day = line_value
-                    break
+                    continue
 
-        if len(month) == 1:
-            month = f'0{month}'
-        if len(day) == 1:
-            day = f'0{day}'
-        mission_data['mission_date'] = f'{year}-{month}-{day}'
+        if year:
+            print(f'month = {month} {type(month)}')
+            print(f'day = {day} {type(day)}')
+
+            if not month or not day:
+                mission_data['mission_date'] = f'{year}'
+            else:
+                if len(month) == 1:
+                    month = f'0{month}'
+                if len(day) == 1:
+                    day = f'0{day}'
+                mission_data['mission_date'] = f'{year}-{month}-{day}'
 
         # TODO: Select strategy
         # If number of players from mission name is in valid range and
@@ -271,6 +289,10 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
     def parse_briefing_file(path_to_briefing, mission_data):
         briefing_lines = []
+        if not os.path.exists(path_to_briefing):
+            mission_data['briefing'] = '<no data>'
+            return
+
         with open(path_to_briefing, 'r', encoding='utf-8') as briefing:
             topic_started = False
             for line in briefing.readlines():
@@ -324,7 +346,7 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
     for f in filenames:
         unpacked_dir = unpack_mission(src_dir, cache_dir, unpbo_app)
-        overview_image_name = copy_overview_picture(unpacked_dir, cache_dir, f)
+        overview_image_name = copy_overview_picture(unpacked_dir, cache_dir, default_content_dir, f)
 
         mission_data = read_mission_data(unpacked_dir, overview_image_name, broken)
         cache_mission_data(mission_data, cache_dir, broken)
@@ -363,7 +385,7 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
     # Compose and write data to single file
     with open(output_filename, 'w', encoding='utf-8') as f:
         f.write(OUTPUT_FILE_HEADER)
-        f.write(json.dumps(totals, indent=4))
+        f.write(json.dumps(totals, indent=4, ensure_ascii=False))
 
     # Copy overview images
     shutil.copytree(
