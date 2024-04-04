@@ -9,7 +9,6 @@ import re
 import hashlib
 
 SETTINGS_FILE = "settings.ini"
-DEPBO_PROCESS = "ExtractPboDos.exe"
 
 BROKEN_MISSIONS_DIR = "fix_needed"
 
@@ -24,25 +23,29 @@ CACHED_FILE_EXTENSION = "json"
 IMAGE_FILE_EXTENSION = "jpg"
 
 OUTPUT_LIST_FILE = "MissionsInfo.js"
+OUTPUT_FILE_HEADER = "var MissionInfo = "
 
+PLAYER_COUNT_MISSION_NAME_REGEX = re.compile(r'^([a-zA-Z]+)(\d+)')
 MISSION_FILE = "mission.sqm"
-BRIEFING_FILE = ("dzn_tSFramework", "Modules", "Briefing", "tSF_briefing.sqf")
-
-PLAYER_COUNT_MISSION_NAME_PATTERN = r'^(co|CO)(\d+)'
 MISSION_FILE_DATA = {
-    "title": r'briefingName="(.*)"',
-    "overview": r'overviewText=\"(.*)\"',
-    "author": r'author=\"(.*)\"',
-    "max_players": r'maxPlayers=(.*);',
-    "year": r'year=(.*);'
+    "section": 'class ScenarioData'.lower(),
+    "title": 'briefingName='.lower(),
+    "overview": 'overviewText='.lower(),
+    "author": 'author='.lower(),
+    "max_players": 'maxPlayers='.lower(),
+    "year": 'year='.lower(),
+    "month": 'month='.lower(),
+    "day": 'day='.lower()
 }
 
+BRIEFING_FILE = ("dzn_tSFramework", "Modules", "Briefing", "tSF_briefing.sqf")
 BRIEFING_FILE_DATA = {
-    "tags": r'TAGS\(\[(.*)\]\);',
-    "topic": r'TOPIC\("(.*)"\);',
+    "tags": 'TAGS',
     "topic_start": "TOPIC",
     "topic_end": "END"
 }
+BRIEFING_FILE_EXCLUDE_TOPICS = ('VII. Замечания для GSO:',)
+
 
 
 def read_settings():
@@ -78,7 +81,7 @@ def check_dirs_exists(src_dir, cache_dir, output_dir, defaults_dir):
 
 
 def list_filenames_in_dir(directory, extension, subdir=''):
-    """Lists all filenames in given dir and subdir with given extension"""
+    """Lists all filenames of given extension in given dir and subdir"""
     mask = (f"{directory}{os.sep}*.{extension}"
             if subdir == '' else
             f"{directory}{os.sep}{subdir}{os.sep}*.{extension}")
@@ -97,14 +100,23 @@ def get_new_missions(cache_dir, src_dir):
     Also marks files that in Source/fix_needed dir but are in Cached
     as newly broken!"""
 
-    print('  CACHED MISSIONS:')
+    def invalidate_cached_file(cache_dir, filename):
+        """Deletes file and related image from cache"""
+        print(f"INVALIDATING CACHE FOR FILE {filename}")
+        img_filename = os.path.join(cache_dir, OVERVIEW_IMAGE_DIR, filename, IMAGE_FILE_EXTENSION)
+        if os.path.exists(img_filename):
+            os.remove(img_filename)
+
+        filename = os.path.join(cache_dir, filename, CACHED_FILE_EXTENSION)
+        os.remove(filename)
+
+
     cached_files = list_filenames_in_dir(cache_dir, CACHED_FILE_EXTENSION)
     cached_broken_files = list_filenames_in_dir(
         cache_dir, CACHED_FILE_EXTENSION, BROKEN_MISSIONS_DIR
     )
-    print('  SOURCE MISSIONS:')
+
     source_files = list_filenames_in_dir(src_dir, RAW_FILE_EXTENSION)
-    print('  SOURCE BROKEN MISSIONS:')
     source_broken_files = list_filenames_in_dir(
         src_dir, RAW_FILE_EXTENSION, BROKEN_MISSIONS_DIR
     )
@@ -123,27 +135,20 @@ def get_new_missions(cache_dir, src_dir):
             print(f'New broken mission! {src_broken_file}')
 
             if src_broken_file in cached_files:
-                invalidate_cached_file(src_broken_file)
+                invalidate_cached_file(cache_dir, src_broken_file)
 
     return new_files, new_broken_files
 
 
-def invalidate_cached_file(filename):
-    """Looks for given file, reads it's content then deletes file and related overview picture from cache"""
-    print(f"INVALIDATING CACHE FOR FILE {filename}")
-    # TODO
-    pass
-
-
 def parse_new_missions(src_dir, cache_dir, default_content_dir,
-                       filenames, broken=False):
+                       filenames, unpbo_app, broken=False):
     """Unpacks mission, copy overview image to cache/images,
     read mission data into JSON file and save it in cache directory"""
 
-    def unpack_mission(src_dir, cache_dir):
+    def unpack_mission(src_dir, cache_dir, unpbo_app):
         raw_mission_file = os.path.join(src_dir, f"{f}.{RAW_FILE_EXTENSION}")
         subprocess.run([
-            DEPBO_PROCESS, "-P",
+            unpbo_app[0], unpbo_app[1],
             raw_mission_file,
             cache_dir
         ], check=False)
@@ -165,9 +170,11 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
     def read_mission_data(mission_dir, overview_image_path, add_fix_needed_tag):
         """Reads mission data"""
         mission_filename = os.path.basename(mission_dir)
-        player_count = re.compile(PLAYER_COUNT_MISSION_NAME_PATTERN).search(mission_filename)
-        if player_count:
-            player_count = int(player_count.group(2))
+        player_count_regex = PLAYER_COUNT_MISSION_NAME_REGEX.search(mission_filename)
+
+        player_count = 0
+        if player_count_regex:
+            player_count = int(player_count_regex.group(2))
 
         overview_image_filename = os.path.basename(overview_image_path)
         mission_data = {
@@ -181,32 +188,126 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
             "overview": "",
             "overview_img": f"{OVERVIEW_IMAGE_DIR}/{overview_image_filename}",
             "briefing": "",
-            "map_shot": ""
+            "map_shot": "",
+            "mission_date": "Unknown"
         }
 
         if add_fix_needed_tag:
             mission_data['tags'].append(FIX_NEEDED_TAG)
 
-        # TODO : Read stuff
-        with open(os.path.join(mission_dir, MISSION_FILE), 'r', encoding='utf-8') as sqm:
-            for line in sqm.readlines():
-                pass
+        # Read mission info
+        parse_mission_sqm(
+            os.path.join(mission_dir, MISSION_FILE),
+            mission_data
+        )
 
-
+        parse_briefing_file(
+            os.path.join(mission_dir, *BRIEFING_FILE),
+            mission_data
+        )
 
         return mission_data
 
+    def parse_mission_sqm(path_to_missionsqm, mission_data):
+        """Parses mission.sqm file and gather data from it"""
+        player_count_max_players = 0
+        player_count_mission_name = 0
+        year = 0
+        month = 0
+        day = 0
+        with open(path_to_missionsqm, 'r', encoding='utf-8') as sqm:
+            scenario_data_found = False
+            for line in sqm.readlines():
+                line_to_test = line.strip().lower()
+                if not scenario_data_found:
+                    scenario_data_found = line_to_test == MISSION_FILE_DATA['section']
+                    continue
+
+                if "=" not in line:
+                    continue
+
+                line_value = line.rsplit("=", maxsplit=1)[1].strip().strip(';"')
+                if line_to_test.startswith(MISSION_FILE_DATA['title']):
+                    mission_data['title'] = line_value
+                    mission_name_regex = PLAYER_COUNT_MISSION_NAME_REGEX.search(line_value)
+                    if mission_name_regex:
+                        player_count_mission_name = int(mission_name_regex.group(2))
+
+                if line_to_test.startswith(MISSION_FILE_DATA['author']):
+                    mission_data['author'] = line_value
+
+                if line_to_test.startswith(MISSION_FILE_DATA['overview']):
+                    mission_data['overview'] = line_value
+
+                if line_to_test.startswith(MISSION_FILE_DATA['max_players']):
+                    player_count_max_players = int(line_value)
+
+                if line_to_test.startswith(MISSION_FILE_DATA['year']):
+                    year = line_value
+
+                if line_to_test.startswith(MISSION_FILE_DATA['month']):
+                    month = line_value
+
+                if line_to_test.startswith(MISSION_FILE_DATA['day']):
+                    day = line_value
+                    break
+
+        if len(month) == 1:
+            month = f'0{month}'
+        if len(day) == 1:
+            day = f'0{day}'
+        mission_data['mission_date'] = f'{year}-{month}-{day}'
+
+        # TODO: Select strategy
+        # If number of players from mission name is in valid range and
+        # greater than maxPlayers - use it
+        player_count_filename = mission_data['player_count']
+        if (player_count_mission_name != player_count_filename and
+                0 < player_count_mission_name < 100 and
+                player_count_mission_name > player_count_max_players):
+            mission_data['player_count'] = player_count_mission_name
+
+        return
+
+    def parse_briefing_file(path_to_briefing, mission_data):
+        briefing_lines = []
+        with open(path_to_briefing, 'r', encoding='utf-8') as briefing:
+            topic_started = False
+            for line in briefing.readlines():
+                if line.startswith(BRIEFING_FILE_DATA['tags']):
+                    tags = line[len(BRIEFING_FILE_DATA['tags']):].strip(";()[]\n").split(",")
+                    for tag in tags:
+                        mission_data['tags'].append(tag.strip('"'))
+                    continue
+
+                if line.startswith(BRIEFING_FILE_DATA['topic_start']):
+                    topic_name = line[len(BRIEFING_FILE_DATA['topic_start']):].strip('(")\n')
+                    if topic_name in BRIEFING_FILE_EXCLUDE_TOPICS:
+                        continue
+
+                    topic_started = True
+                    briefing_lines.append(f'<br/><br/>{topic_name}<br/>')
+                    continue
+
+                if line.startswith(BRIEFING_FILE_DATA['topic_end']):
+                    topic_started = False
+                    continue
+
+                if topic_started:
+                    line = line.strip().replace('""', "'").strip('"')
+                    briefing_lines.append(line)
+
+        if not briefing_lines:
+            return
+        mission_data['briefing'] = ''.join(briefing_lines)
+
     def cache_mission_data(mission_data, cache_dir, broken):
         """Creates cache file with mission data"""
-        print("(cache_mission_data) Invoked")
-        print(mission_data)
-        print(cache_dir)
         base_filename = f"{mission_data['filename']}.{CACHED_FILE_EXTENSION}"
         output_file = os.path.join(cache_dir, base_filename)
 
-        print(output_file)
         with open(output_file, "w", encoding="utf-8") as f:
-            f.write(json.dumps(mission_data, indent=4))
+            f.write(json.dumps(mission_data, indent=4, ensure_ascii=False))
 
         # For broken mission - make an empty flag file to mark broken missions
         if broken:
@@ -222,10 +323,8 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
     cache_dir = os.path.join(cache_dir)
 
     for f in filenames:
-        unpacked_dir = unpack_mission(src_dir, cache_dir)
+        unpacked_dir = unpack_mission(src_dir, cache_dir, unpbo_app)
         overview_image_name = copy_overview_picture(unpacked_dir, cache_dir, f)
-
-        print(overview_image_name)
 
         mission_data = read_mission_data(unpacked_dir, overview_image_name, broken)
         cache_mission_data(mission_data, cache_dir, broken)
@@ -263,7 +362,7 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
 
     # Compose and write data to single file
     with open(output_filename, 'w', encoding='utf-8') as f:
-        f.write('var MissionInfo = ')
+        f.write(OUTPUT_FILE_HEADER)
         f.write(json.dumps(totals, indent=4))
 
     # Copy overview images
@@ -286,6 +385,7 @@ def main():
     src_dir = settings['General']['source_dir']
     output_dir = settings['General']['output_dir']
     default_content_dir = settings['General']['default_content_dir']
+    unpbo_app = (settings['Apps']['unpbo'], settings['Apps']['unpbo_args'])
 
     if not check_dirs_exists(
         src_dir, cache_dir, output_dir, default_content_dir
@@ -296,11 +396,11 @@ def main():
     new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
     parse_new_missions(
         src_dir, cache_dir, default_content_dir,
-        new_missions
+        new_missions, unpbo_app
     )
     parse_new_missions(
         src_dir, cache_dir, default_content_dir,
-        new_broken_missions, broken=True
+        new_broken_missions, unpbo_app, broken=True
     )
 
     # Compose cached files into a new one
