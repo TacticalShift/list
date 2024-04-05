@@ -14,7 +14,7 @@ BROKEN_MISSIONS_DIR = "fix_needed"
 
 OVERVIEW_IMAGE_DIR = "imgs"
 OVERVIEW_IMAGE = "overview.jpg"
-DEFAULT_OVERVIEW_IMAGE = 'emptyoverview.jpg'
+DEFAULT_OVERVIEW_IMAGE = 'default_overview.jpg'
 
 FIX_NEEDED_TAG = 'FIX NEEDED'
 
@@ -140,7 +140,7 @@ def get_new_missions(cache_dir, src_dir):
     return new_files, new_broken_files
 
 
-def parse_new_missions(src_dir, cache_dir, default_content_dir,
+def parse_new_missions(src_dir, cache_dir,
                        filenames, unpbo_app, broken=False):
     """Unpacks mission, copy overview image to cache/images,
     read mission data into JSON file and save it in cache directory"""
@@ -148,14 +148,14 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
     def unpack_mission(src_dir, cache_dir, unpbo_app):
         raw_mission_file = os.path.join(src_dir, f"{f}.{RAW_FILE_EXTENSION}")
         subprocess.run([
-            unpbo_app[0], unpbo_app[1],
+            unpbo_app[0], unpbo_app[1], unpbo_app[2],
             raw_mission_file,
             cache_dir
         ], check=False)
 
         return os.path.join(cache_dir, f)
 
-    def copy_overview_picture(from_dir, to_dir, default_content_dir, filename):
+    def copy_overview_picture(from_dir, to_dir, filename):
         to_dir = os.path.join(to_dir, OVERVIEW_IMAGE_DIR)
         if not os.path.exists(to_dir):
             os.mkdir(to_dir)
@@ -167,7 +167,7 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
         target_img = os.path.join(from_dir, OVERVIEW_IMAGE)
         if not os.path.exists(target_img):
-            target_img = os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE)
+            return os.path.join(to_dir, DEFAULT_OVERVIEW_IMAGE)
 
         shutil.copyfile(target_img, image_file)
         return image_file
@@ -215,7 +215,7 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
     def parse_mission_sqm(path_to_missionsqm, mission_data):
         """Parses mission.sqm file and gather data from it"""
-        player_count_max_players = 0
+        # player_count_max_players = 0
         player_count_mission_name = 0
         year = ''
         month = ''
@@ -247,9 +247,9 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
                     mission_data['overview'] = line_value
                     continue
 
-                if line_to_test.startswith(MISSION_FILE_DATA['max_players']):
-                    player_count_max_players = int(line_value)
-                    continue
+                # if line_to_test.startswith(MISSION_FILE_DATA['max_players']):
+                #    player_count_max_players = int(line_value)
+                #    continue
 
                 if line_to_test.startswith(MISSION_FILE_DATA['year']):
                     year = line_value
@@ -264,9 +264,6 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
                     continue
 
         if year:
-            print(f'month = {month} {type(month)}')
-            print(f'day = {day} {type(day)}')
-
             if not month or not day:
                 mission_data['mission_date'] = f'{year}'
             else:
@@ -276,13 +273,11 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
                     day = f'0{day}'
                 mission_data['mission_date'] = f'{year}-{month}-{day}'
 
-        # TODO: Select strategy
         # If number of players from mission name is in valid range and
         # greater than maxPlayers - use it
         player_count_filename = mission_data['player_count']
         if (player_count_mission_name != player_count_filename and
-                0 < player_count_mission_name < 100 and
-                player_count_mission_name > player_count_max_players):
+                0 < player_count_mission_name < 100):
             mission_data['player_count'] = player_count_mission_name
 
         return
@@ -346,7 +341,7 @@ def parse_new_missions(src_dir, cache_dir, default_content_dir,
 
     for f in filenames:
         unpacked_dir = unpack_mission(src_dir, cache_dir, unpbo_app)
-        overview_image_name = copy_overview_picture(unpacked_dir, cache_dir, default_content_dir, f)
+        overview_image_name = copy_overview_picture(unpacked_dir, cache_dir, f)
 
         mission_data = read_mission_data(unpacked_dir, overview_image_name, broken)
         cache_mission_data(mission_data, cache_dir, broken)
@@ -392,6 +387,7 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
         os.path.join(cache_dir, OVERVIEW_IMAGE_DIR),
         os.path.join(output_dir, OVERVIEW_IMAGE_DIR)
     )
+    # Copy default image to use for missions w/o overview image
     shutil.copy(
         os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE),
         os.path.join(img_dir, DEFAULT_OVERVIEW_IMAGE)
@@ -407,7 +403,12 @@ def main():
     src_dir = settings['General']['source_dir']
     output_dir = settings['General']['output_dir']
     default_content_dir = settings['General']['default_content_dir']
-    unpbo_app = (settings['Apps']['unpbo'], settings['Apps']['unpbo_args'])
+    unpbo_app = (
+        settings['UnpboApp']['unpbo'],
+        settings['UnpboApp'].get('unpbo_args1', ''),
+        settings['UnpboApp'].get('unpbo_args2', ''),
+        settings['UnpboApp'].get('unpbo_args3', '')
+     )
 
     if not check_dirs_exists(
         src_dir, cache_dir, output_dir, default_content_dir
@@ -417,11 +418,11 @@ def main():
     # Look for new missions and parse 'em
     new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
     parse_new_missions(
-        src_dir, cache_dir, default_content_dir,
+        src_dir, cache_dir,
         new_missions, unpbo_app
     )
     parse_new_missions(
-        src_dir, cache_dir, default_content_dir,
+        src_dir, cache_dir,
         new_broken_missions, unpbo_app, broken=True
     )
 
