@@ -1,0 +1,14 @@
+{
+    "id": "07ddfec4ea368d67b1cd768c12961b10",
+    "filename": "CO30_Der_Flug_nach_Kunara_Ext_1A.lythium",
+    "title": "CO30 Der Flug nach Kunara (Ext) 1A",
+    "author": "Tactical Shift",
+    "player_count": 30,
+    "terrain": "lythium",
+    "tags": [],
+    "overview": "German heliborne platoon searches for Taliban HQ",
+    "overview_img": "imgs/CO30_Der_Flug_nach_Kunara_Ext_1A.lythium.jpg",
+    "briefing": "<br/><br/>I. Обстановка:<br/>Разведка узнала о штабе местной группировки талибана в нашей зоне ответственности. К сожалению, командование отказало нам в авиаударе и поручило сначала проверить информацию, после чего уничтожить штаб самостоятельно.<br /><br />Нашему взводу, расположенному на FOB Buschsucher, предстоит проверить возможные локации штаба и уничтожить его.<br /><br /><br/><br/>А. Враждебные силы:<br/>Боевики Талибана - иррегулярные силы:<br />   Патрули на возвышенностях<br />   Отряды около предполагаемого штаба<br /><br /><br/><br/>Б. Дружественные силы:<br/>Luftbewegliche Brigade 1, Division Luftbewegliche Operationen, deutsches Einsatzkontingent ISAF:  <br /><br />1. Zug, 3. Kompanie, Jägerregiment 1<br />   1'6 - 3 чел.<br />   1'1 - 9 чел.      <br />   1'2 - 9 чел.<br />   1'4 - 7 чел.<br /><br />2. Staffel, Transporthubschrauberregiment 10<br />   Bubby-1-1 - вертолёт UH-1D<br />   Bubby-1-2 - вертолёт UH-1D<br />   Baron - вертолёт UH-1D(Gunship)<br /><br />1. Mörserzug, 5. Schwere Jägerkompanie<br />   Stahlregen-1-1 - 82мм миномёты<br/><br/>II. Задание<br/>1. Уничтожить штаб противника (подорвать комнату с радио)<br />2. Вернуться на FOB BUSCHSUCHER<br/><br/>III. Выполнение:<br/>Нам известно, что противник разместил патрули на высотах вокруг нашей цели. Возможно, противник обладает станковыми пулемётами ДШК около цели и средствами ПВО (ЗУ-23) на севере. <br /><br />Вражеские подкрепления не ожидаются.<br /><br />Вы можете передвигаться на бронемашинах Dingo или воспользоваться транспортными вертолётами.<br/><br/>IV. Поддержка:<br/>4x бронемашина Dingo (MG3)<br />1x бронемашина Fennek <br /><br />Транспортный вертолёт UH-1D (M240), позывной Bubby-1-1<br />Транспортный вертолёт UH-1D (M240), позывной Bubby-1-2<br />Вертолёт поддержки UH-1D (Gunship), позывной Baron<br /><br />Миномётная батарея 82мм, позывной Stahlregen-1-1<br /><br />CCP<br />FARP<br /><br />Резерв:<br />1x бронемашина Fennek<br />2x бронемашина Dingo (MG3)<br/><br/>V. Сигналы:<br/>PL NET 50<br />PL SUP NET 51<br />JTAC/CAS NET 52<br />1'1 - SR CH 1<br />1'2 - SR CH 2<br />1'4 - SR CH 4<br />1'6 - SR CH 6<br /><br/><br/>VI. Замечания:<br/>Взрывчатка находится у Pionier<br />Дополнительные патроны для пулемёта MG3 находятся у Schütze<br />РПГ MAAWS и снаряды к нему находятся в машинах Dingo и вертолётах поддержки",
+    "map_shot": "",
+    "mission_date": "2010-11-07"
+}

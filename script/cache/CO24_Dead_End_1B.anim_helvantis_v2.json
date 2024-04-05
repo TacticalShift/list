@@ -1,0 +1,14 @@
+{
+    "id": "25341d991eb266d5e12de695bbcb42e7",
+    "filename": "CO24_Dead_End_1B.anim_helvantis_v2",
+    "title": "CO24 Dead End 1B",
+    "author": "TS",
+    "player_count": 24,
+    "terrain": "anim_helvantis_v2",
+    "tags": [],
+    "overview": "Chernushatian special forces ambush column",
+    "overview_img": "imgs/CO24_Dead_End_1B.anim_helvantis_v2.jpg",
+    "briefing": "<br/><br/>I. Обстановка:<br/>Нам стал известен маршрут колонны войск Чернаруси. Колонна, состоящая из лёгкой бронетехники и грузовиков, выйдет из Old Farm и проследует по маршрутным точкам до Military Base. Задача вашего взвода - организовать засаду на конвой в городе Abstwind.<br/><br/>А. Враждебные силы:<br/>Колонна ВС Чернаруси - лёгкая бронетехника, грузовые автомобили, пехота<br/><br/>Б. Дружественные силы:<br/>Взвод сил специального назначения Чернушетии 'Кхал'<br/><br/>II. Задание:<br/>1. Уничтожить как минимум три грузовые машины из колонны<br />2. Проехать до точки Укрытие<br/><br/>III. Выполнение:<br/>По плану командира.<br/><br/>IV. Поддержка:<br/>3 грузовика Урал<br />УАЗ<br />Взрывчатка у стрелков (ГП)<br/><br/>V. Сигналы:<br/>PL NET 50<br />1'1 - SR CH 1<br />1'2 - SR CH 2<br />1'3 - SR CH 3<br />1'6 - SR CH 6<br/><br/>VI. Замечания:<br/>Powered by Tactical Shift Framework",
+    "map_shot": "",
+    "mission_date": "2016-12-11"
+}

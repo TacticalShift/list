@@ -1,0 +1,14 @@
+{
+    "id": "c79f139af402deb75094073e89b98a31",
+    "filename": "co28_earth_movers_1A.eden",
+    "title": "CO28 Earthmovers",
+    "author": "lim",
+    "player_count": 28,
+    "terrain": "eden",
+    "tags": [],
+    "overview": "US Army Assault on Heavily fortified Soviet Position",
+    "overview_img": "imgs/co28_earth_movers_1A.eden.jpg",
+    "briefing": "<br/><br/>I. Обстановка:<br/>     Холодная война давно перешла в горячую стадию: ФРГ пала под натиском ГДР и Советов, Франция традиционно капитулировала и Советские войска прорвались до Ла-Манша. Красная армия окапывается и готовится продолжить свое наступление дальше на запад на Италию. Оставшиеся силы альянса планируют прервать наступление советов начав высадку с севера, а наша страна (США) планирует начать контр-наступление с юга, полуострова Saint-Mandrier-sur-Mer.<br />     Мы должны захватить укреп-район Morton, чтобы использовать его как плацдарм для наступления в дальнейшем.<br/><br/>А. Враждебные силы:<br/>Советские войска - Регулярные силы<br />     1-2 взвода и система траншей<br/><br/>Б. Дружественные силы:<br/>Армия США - Регулярные войска<br />     1'1 - 9 чел.<br />     1'2 - 9 чел.<br />     1'4 - 7 чел.<br /><br />Abel 1 - 3 чел.<br />Abel 2 - 3 чел.<br /><br />     1'6 - 3 чел.<br/><br/>II. Задание:<br/>1. Захватить укреп-район Morton<br /><br /><br/><br/>III. Выполнение:<br/>По плану командира.<br />Линия препятствий противника была прорвана на 3х направлениях, выбирайте любой<br/><br/>IV. Поддержка:<br/>INFANTRY Choice<br />3x m113 m2 - CAN SWIM<br />3x MTCR<br /><br />ABEL Choice<br />2x AAV - CAN SWIM<br />2x Lav - CAN SWIM<br />2x Bradley<br/><br/>V. Сигналы:<br/>PL NET 50<br />     1'1 - SR CH 1<br />     1'2 - SR CH 2<br />     1'4 - SR CH 4<br />     1'6 - SR CH 6<br /><br />ABEL 1 - SR CH 7<br />ABEL 2 - SR CH 8<br/><br/>VI. Замечания:<br/>Powered by Tactical Shift Framework",
+    "map_shot": "",
+    "mission_date": "1984"
+}
