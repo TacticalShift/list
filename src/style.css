@@ -2,7 +2,15 @@ body {
 	margin: 0px;
 	font-family: sans-serif;
 	background-color: #ececec;
-	overflow: auto;
+	overflow-y: hidden;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	left: 0px;
+	top: 0px;
+    right: auto;
+    bottom: auto;
+	font-family: "Inter";
 }
 
 .clickable {
@@ -15,6 +23,11 @@ body {
 @font-face {
     font-family: "tSFont";
     src: url(tS_EL.otf);
+}
+
+@font-face {
+	font-family: "Inter";
+	src: url(Inter-Light.otf);
 }
 
 #header {
@@ -43,10 +56,21 @@ body {
 	border-radius: 0px 8px 8px 8px;
 }
 
+#header-btn-select-random {
+	cursor: pointer;
+	position: absolute;
+	top: 8px;
+	right: 50px;
+	height: 30px;
+	width: 128px;
+}
+
 /* Grid
 */
 #wrapper {
 	padding: 5px;
+	height: 94%;
+	overflow-y: overlay;
 }
 
 #grid {
@@ -76,7 +100,7 @@ body {
 }
 
 .th-n {
-	max-width: 20px;
+	max-width: 50px;
 	padding: 10px 2px 10px 2px;
 }
 
@@ -191,6 +215,10 @@ td {
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+.modal-terrain span {
+	font-weight: bolder;
+}
+
 /* Modal Content/Box */
 .modal-content {
 	background-color: #fefefe;
@@ -207,10 +235,10 @@ td {
 
 #overview_img {
 	display: block;
-	margin-bottom: 10px;
+	margin: 0 auto;
 	max-height: 256px;
 	max-width: 512px;
-	border-radius: 16px;
+	border-radius: 0px 32px 32px 32px;
 }
 
 /* The Close Button */
@@ -219,10 +247,13 @@ td {
 	float: right;
 	font-size: 75px;
 	font-weight: bold;
+    line-height: 55px;
 	
+	/*
 	position: fixed;
 	top: 200px;
 	right: 170px;
+	*/
 	
 	transition: transform  0.2s;
 }
@@ -232,7 +263,6 @@ td {
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
-	transform: rotate(-90deg);
 }
 
 .random {
@@ -241,9 +271,11 @@ td {
 	font-size: 50px;
 	font-weight: bold;
 	
+	/*
 	position: fixed;
 	top: 210px;
 	right: 120px;
+	*/
 	
 	transition: transform  0.4s;
 }
