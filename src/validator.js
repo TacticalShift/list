@@ -4,13 +4,13 @@ var Validator = function () {
 	this.validateForDuplicates = function () {
 		let guids = [];
 		let duplicates = [];
-		for (i = 0; i < missionsInfo.length; i++) {
-			let guid = missionsInfo[i].id;
+		for (i = 0; i < MissionsInfo.length; i++) {
+			let guid = MissionsInfo[i].id;
 			if (guids.includes(guid)) {
 				console.log("Duplicate GUID: " + guid);
-				console.log(missionsInfo[i]);
+				console.log(MissionsInfo[i]);
 				
-				duplicates.push(missionsInfo[i]);
+				duplicates.push(MissionsInfo[i]);
 			}
 			guids.push(guid);
 		}

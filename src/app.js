@@ -1,16 +1,18 @@
 
 var TagsMarkdown = {
-	"SPECOPS": { 		bg: "#8ab62f", text: "whitesmoke" },
-	"INFANTRY": {		bg: "#ba2b2b", text: "whitesmoke" },
-	"COMB.ARMS": {		bg: "#596816", text: "whitesmoke" },
-	"JTAC/CAS": { 		bg: "#6aa29e", text: "whitesmoke" },
-	"ARMOR": { 			bg: "#6e8fa6", text: "whitesmoke" },
-	"AIRBORNE": {		bg: "#2a6c98", text: "whitesmoke" },
-	"MOUT": { 			bg: "#aaaaaa", text: "#ffffff" },
-	"RolePlay":  { 		bg: "#59ae42", text: "whitesmoke" },
-	"FIX NEEDED": {		bg: "#dddd11", text: "#333333" },
-	"default": { 		bg: "#8374aa", text: "whitesmoke" }
+	"SPECOPS": { 		bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
+	"INFANTRY": {		bg: "#ba2b2b", text: "whitesmoke", "tooltip": "Пехотная операция силами стрелковых или моторизированных подразделений" },
+	"COMB.ARMS": {		bg: "#596816", text: "whitesmoke", "tooltip": "Общевойсковая операция с участием разных родов войск" },
+	"JTAC/CAS": { 		bg: "#6aa29e", text: "whitesmoke", "tooltip": "Операция с привлечением штурмовой авиации" },
+	"ARMOR": { 			bg: "#6e8fa6", text: "whitesmoke", "tooltip": "Операция с привлечением тяжелой техники (танки, БМП)" },
+	"AIRBORNE": {		bg: "#2a6c98", text: "whitesmoke", "tooltip": "Операция с привлечением транспортной авиации (десант)" },
+	"MOUT": { 			bg: "#aaaaaa", text: "#ffffff", "tooltip": "Операция в городской среде" },
+	"RolePlay":  { 		bg: "#59ae42", text: "whitesmoke", "tooltip": "Миссия с ролевым элементом" },
+	"FIX NEEDED": {		bg: "#dddd11", text: "#333333", "tooltip": "Сломано! Пишите в СпортЛото!" },
+	"default": { 		bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
 };
+
+const FIX_NEEDED_TAG = "FIX NEEDED"
 
 
 var GridModelClass = function (data) {
@@ -55,7 +57,9 @@ var GridModelClass = function (data) {
 			, slotsFrom: "player_count"
 			, slotsTo: "player_count"
 			, tags: "tags"
-		}
+		},
+		
+		currentFilter: {}
 	}
 
 	this.view = null;
@@ -96,25 +100,26 @@ var GridModelClass = function (data) {
 	this.filterBy = function (filterData) {
 		// Params: { "title":"...", "tags": [...] }
 		this.resetFilter();
+		this.filter.currentFilter = filterData;
 		
-		filterData = Object.entries(filterData);
-		
+		filterData = Object.entries(filterData);		
 		if (filterData.length == 0) { // Exit on filter reset action
+			// TODO: Need to handle FIX NEEDED tag somehow?
 			this.refreshView(); 
 			return; 
 		}
 
 		let filteredIndexes = [];
 		for (let i = 0; i < filterData.length; ++i) {
-			let filterField = filterData[i][0];
-			let filterValue = filterData[i][1];
+			const filterField = filterData[i][0];
+			const filterValue = filterData[i][1];
 
-			let filterType = this.filter.field2filter[filterField];
-			let schemeField = this.filter.field2scheme[filterField];
+			const filterType = this.filter.field2filter[filterField];
+			const schemeField = this.filter.field2scheme[filterField];
 
-			let filterFunction = this.filter[filterType];
+			const filterFunction = this.filter[filterType];			
 			this.data.forEach(function (el) {
-				let result = filterFunction(el[schemeField], filterValue);
+				const result = filterFunction(el[schemeField], filterValue);
 
 				// Add indexes that not correspond to filter value to filteredIndexeses
 				if (!result && !filteredIndexes.includes( el["id"] )) {
@@ -141,10 +146,13 @@ var GridModelClass = function (data) {
 
 	this.prepareFilterData = function () {
 		if (this.filter.terrainValues.length == 0 || this.filter.tagsValues.length == 0) {
-			let terrains = [];
-			let tags = [];
+			const terrains = [];
+			const tags = [];
+			const terrainsLowerCase = [];
 			this.data.forEach(function (el) {
-				if (!terrains.includes(el.terrain)) {
+				const terrainName = el.terrain.toLowerCase()
+				if (!terrainsLowerCase.includes(terrainName)) {
+					terrainsLowerCase.push(terrainName);
 					terrains.push(el.terrain)
 				}
 				
@@ -186,7 +194,7 @@ var GridModelClass = function (data) {
 	};
 
 	this.refreshMissionDetails = function(id) {
-		if (id < 0) {
+		if (id === "") {
 			this.view.modal_hidePopup();
 			this.updateURL("");
 			return;
@@ -270,14 +278,18 @@ var GridViewClass = function () {
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
+		const filterFixNeededExplicitly = this.controller.collectFilterActiveTag().includes(FIX_NEEDED_TAG)
 		
 		let gridSize = 0;
 
 		while (model.hasNext()) {
-			let info = model.next();
-			let tags = this.tags_compileTagsHTML(info.tags, true);
+			const info = model.next();
+			if (info.tags.includes(FIX_NEEDED_TAG) && !filterFixNeededExplicitly) {
+				continue;
+			}
 			
-			let title = (info.title == "null") ? info.filename : info.title;
+			const tags = this.tags_compileTagsHTML(info.tags, true);
+			const title = (info.title == "null") ? info.filename : info.title;
 
 			$(this.$grid).append(`<tr class="grid-line" mission-id="${info.id}">`
 				+ `<td>${title}</td>`
@@ -285,7 +297,7 @@ var GridViewClass = function () {
 				+ `<td class='clickable' filter-type='terrain'>${info.terrain}</td>`
 				+ `<td class="td-overview">${info.overview}</td>`
 				+ `<td class="td-tags">${tags}</td>`
-				+ `<td class="td-center btn-see-more">⇱ Details</td>`
+				+ `<td class="td-center btn-see-more">⇱</td>`
 			+ "</tr>");
 			
 			++gridSize;
@@ -293,10 +305,10 @@ var GridViewClass = function () {
 		
 		if (model.isFiltered()) {
 			$(this.$filter_head).toggleClass("filter-active", true);
-			$(this.$filter_head).html("Filtered (" + gridSize + ")");
+			$(this.$filter_head).html(`Выбрано миссий: ${gridSize}`);
 		} else {
 			$(this.$filter_head).toggleClass("filter-active", false);
-			$(this.$filter_head).html("Filters");
+			$(this.$filter_head).html(`Все миссии (${gridSize})`);
 			this.filter_resetFilter();
 		}
 
@@ -326,7 +338,8 @@ var GridViewClass = function () {
 
 		$(this.$filter_terrain).append(`<option></option>`);
 		for (let i = 0; i < valuesTerrain.length; ++i) {
-			$(this.$filter_terrain).append(`<option>${valuesTerrain[i]}</option>`);
+			const displayName = valuesTerrain[i]
+			$(this.$filter_terrain).append(`<option value="${displayName.toLowerCase()}">${displayName}</option>`);
 		}
 		
 		for (let i = 0; i < valuesTags.length; ++i) {
@@ -337,7 +350,7 @@ var GridViewClass = function () {
 			$(this.$filter_tags).append(
 				`<span >` + 
 				`<input type='checkbox' id="${tag}" style="display:none" />` +
-				`<label class='tag clickable td-filter-tag td-inactive-tag' for="${tag}" style="background-color: ${tagData.bg}; color: ${tagData.text}">${tag}</label>` +
+				`<label class='tag clickable td-filter-tag td-inactive-tag' for="${tag}" style="background-color: ${tagData.bg}; color: ${tagData.text}" title="${tagData.tooltip}">${tag}</label>` +
 				`</span>`
 			);
 		}
@@ -355,26 +368,34 @@ var GridViewClass = function () {
 	}
 	
 	this.modal_showPopup = function (data) {
-		let title = (data.title == "null") ? data.filename : data.title;
+		let title = (data.title == "") ? data.filename : data.title;
 		
 		$(`${this.$popup} h1`).text(title);
-		$(`${this.$popup} p[class='modal-terrain']`).text("at " + data.terrain + " | " + data.player_count + " slots");
+		
+		
+		$(`${this.$popup} p[class='modal-terrain']`).html(
+			`на <span>${data.terrain}</span>` +
+			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
+			` | до ${data.player_count} игроков` +
+			((data.author == 'Unknown') ? "" : ` | by ${data.author}`)
+		);
 		$(`${this.$popup} span[class='modal-guid']`).text("[GUID:" + data.id + "][Filename:" + data.filename + "]");
-		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false));
+		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
-		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing);
+		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing.replaceAll('<font', '<noformat').replaceAll('</font>', '</noformat>'));
 		$(this.$popup).css("display","block");
+		$(this.$popup).scrollTop(0);
 	}
 
 	this.modal_hidePopup = function () {
 		$(this.$popup).css("display","none");
 	}
 	
-	this.tags_compileTagsHTML = function (tags, isClickable) {
-		let tagHtml = "";
+	this.tags_compileTagsHTML = function (tags, isClickable = true, showDescription = false) {
+		let tagsHtml = [];
 		
-		let tagClasses = isClickable ? "tag clickable" : "tag";
+		const tagClasses = isClickable ? "tag clickable" : "tag";
 
 		tags.forEach(function (tag) {
 			let tagData = TagsMarkdown[tag];
@@ -382,10 +403,17 @@ var GridViewClass = function () {
 				tagData = TagsMarkdown.default;
 			}
 			
-			tagHtml = tagHtml.concat(`<p class="${tagClasses}" style="background-color: ${tagData.bg}; color: ${tagData.text}">${tag}</p>`);
+			let text = "";
+			if (!showDescription) {
+				text = `<p class="${tagClasses}" style="background-color: ${tagData.bg}; color: ${tagData.text}" title="${tagData.tooltip}">${tag}</p>`
+			} else {
+				text = `<p class="${tagClasses}" style="background-color: ${tagData.bg}; color: ${tagData.text}" >[${tag}] ${tagData.tooltip}</p>`
+			}
+			
+			tagsHtml.push(text);
 		});
 
-		return tagHtml;
+		return tagsHtml.join("");
 	};
 }
 
@@ -393,17 +421,20 @@ var GridControllerClass = function () {
 	this.model = null;
 	this.headerEventsSet = false;
 	this.filtersCollapsed = true;
-
+	
+	this.$filter_random = "#header-btn-select-random";
+	
+	this.$popup = "#popup";
+	
 	this.$grid_sortable = "#grid th[sortable='true']";
 	this.$btn_popupClose = "#popup span[class='close']";
 	this.$btn_popupRandom = "#popup span[class='random']";
 	this.$btn_seeMore = "#grid tr td[class*='btn-see-more']";
 	this.$btn_terrain = "#grid tr td[filter-type='terrain']";
 	this.$btn_tags = "#grid tr td p[class='tag clickable']";
-
+	
 	this.$filter_head = "#grid-filter tr th";
 	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
-	this.$filter_random = "#btn-filter-random";
 	this.$filter_copyURL = "#btn-filter-url";
 	this.$filter_resetFitler = "#btn-reset-filter";
 	this.$filter_doFilter = "#btn-filter";
@@ -422,7 +453,7 @@ var GridControllerClass = function () {
 
 	this.initEvents = function () {
 		this.removeEvents();
-
+		
 		/* Static elements: Grid header, Filter form, Modal window */
 		if (!this.headerEventsSet) {
 			/* Sortable header */
@@ -463,12 +494,14 @@ var GridControllerClass = function () {
 			$(this.$filter_tags).on("click", this, function (event) {
 				if (event.target.id == "") { return };
 				
-				let tagItem = event.target.labels[0];
+				const controller = event.data;
+				const tagItem = event.target.labels[0];
 				if (event.target.checked) {
 					$(tagItem).removeClass("td-inactive-tag");
 				} else {
 					$(tagItem).addClass("td-inactive-tag");
 				};
+				controller.executeFiltering();
 			});
 			
 			$(this.$filter_doFilter).on("click", this, function (event) {
@@ -491,9 +524,13 @@ var GridControllerClass = function () {
 				controller.filterAndSelectRandom();
 			});
 			/* Modal window */
+			$(this.$popup).on("click", this, function (event) {
+				if (event.target.id !== "popup") return
+				event.data.model.refreshMissionDetails("");
+			})
 			$(this.$btn_popupClose).on("click", this, function (event) {
 				let model = event.data.model;
-				model.refreshMissionDetails(-1);
+				model.refreshMissionDetails("");
 			})
 			$(this.$btn_popupRandom).on("click", this, function (event) {
 				let controller = event.data;
@@ -506,7 +543,7 @@ var GridControllerClass = function () {
 		/* Details button */
 		$(this.$btn_seeMore).on("click", this, function (event) {
 			let model = event.data.model;
-			let missionId = parseInt( $(this).parent().attr("mission-id") );
+			let missionId = $(this).parent().attr("mission-id");
 
 			model.refreshMissionDetails(missionId);
 		});
@@ -532,11 +569,7 @@ var GridControllerClass = function () {
 		this.model.filterBy(params);
 	};
 	
-	this.collectFilterParams = function () {
-		let byTitle = $(this.$filter_byTitle).val();
-		let byTerrain = $(this.$filter_byTerrain).val();
-		let bySlotsFrom = $(this.$filter_bySlotsFrom).val();
-		let bySlotsTo = $(this.$filter_bySlotsTo).val();
+	this.collectFilterActiveTag = function () {
 		let byTags = [];
 		$(`.td-filter-inputs span`).each(function () { 
 			let $tagFilter = $(this).find(`input[type='checkbox']`);
@@ -544,6 +577,24 @@ var GridControllerClass = function () {
 				byTags.push($tagFilter.prop("id"));
 			}
 		});
+		
+		return byTags
+	}
+	
+	this.collectFilterParams = function () {
+		let byTitle = $(this.$filter_byTitle).val();
+		let byTerrain = $(this.$filter_byTerrain).val();
+		let bySlotsFrom = $(this.$filter_bySlotsFrom).val();
+		let bySlotsTo = $(this.$filter_bySlotsTo).val();
+		let byTags = this.collectFilterActiveTag();
+		/*
+		$(`.td-filter-inputs span`).each(function () { 
+			let $tagFilter = $(this).find(`input[type='checkbox']`);
+			if ($tagFilter.prop("checked")) {
+				byTags.push($tagFilter.prop("id"));
+			}
+		});
+		*/
         
 		let params = {};
 		
@@ -560,6 +611,12 @@ var GridControllerClass = function () {
 		
 		return params;
 	};
+	
+	this.getCurrentFilterParams = function () {
+		const params = this.model.filter.currentFilter;
+		
+		
+	}
 	
 	this.updatedFilterParams = function (addParams) {
 		// Updates current filtering parameters
@@ -597,10 +654,9 @@ var GridControllerClass = function () {
 		
 		// Update UI
 		$(this.$filter_byTitle).val( params.hasOwnProperty("title") ? params.title : "" );
-		$(this.$filter_byTerrain).val( params.hasOwnProperty("terrain") ? params.terrain : "" );
+		$(this.$filter_byTerrain).val( params.hasOwnProperty("terrain") ? params.terrain.toLowerCase() : "" );		
 		$(this.$filter_bySlotsFrom).val( params.hasOwnProperty("slotsFrom") ? params.slotsFrom : "" );
 		$(this.$filter_bySlotsTo).val( params.hasOwnProperty("slotsTo") ? params.slotsTo : "" );
-		
 		if (params.hasOwnProperty("tags")) {
 			$(`.td-filter-inputs span`).each(function () { 
 				if (params.tags.includes( $(this).find(`input[type='checkbox']`).prop("id") )) {
@@ -696,7 +752,7 @@ $( document ).ready(function () {
 	console.log("KEK Ready");
 
 	GridApp = {};
-	GridApp.model = new GridModelClass(missionsInfo);
+	GridApp.model = new GridModelClass(MissionsInfo);
 	GridApp.view = new GridViewClass();
 	GridApp.controller = new GridControllerClass();
 
