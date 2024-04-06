@@ -23,7 +23,7 @@ CACHED_FILE_EXTENSION = "json"
 IMAGE_FILE_EXTENSION = "jpg"
 
 OUTPUT_LIST_FILE = "MissionsInfo.js"
-OUTPUT_FILE_HEADER = "var MissionInfo = "
+OUTPUT_FILE_HEADER = "var MissionsInfo = "
 
 PLAYER_COUNT_MISSION_NAME_REGEX = re.compile(r'^([a-zA-Z]+)(\d+)')
 MISSION_FILE = "mission.sqm"
