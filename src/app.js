@@ -383,7 +383,7 @@ var GridViewClass = function () {
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
-		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing.replaceAll('<font', '<noformat').replaceAll('</font>', '</noformat>'));
+		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing);
 		$(this.$popup).css("display","block");
 		$(this.$popup).scrollTop(0);
 	}

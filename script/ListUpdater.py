@@ -182,13 +182,14 @@ def parse_new_missions(src_dir, cache_dir,
             player_count = int(player_count_regex.group(2))
 
         overview_image_filename = os.path.basename(overview_image_path)
+        mission_name, terrain_name = mission_filename.rsplit(".", maxsplit=1)
         mission_data = {
             "id": hashlib.md5(mission_filename.encode('utf-8')).hexdigest(),
             "filename": mission_filename,
-            "title": "",
+            "title": mission_name,
             "author": "Unknown",
             "player_count": player_count,
-            "terrain": mission_filename.rsplit('.', maxsplit=1)[-1],
+            "terrain": terrain_name,
             "tags": [],
             "overview": "",
             "overview_img": f"{OVERVIEW_IMAGE_DIR}/{overview_image_filename}",
@@ -294,6 +295,9 @@ def parse_new_missions(src_dir, cache_dir,
                 if line.startswith(BRIEFING_FILE_DATA['tags']):
                     tags = line[len(BRIEFING_FILE_DATA['tags']):].strip(";()[]\n").split(",")
                     for tag in tags:
+                        tag = tag.strip('"')
+                        if not tag:
+                            continue
                         mission_data['tags'].append(tag.strip('"'))
                     continue
 
@@ -303,7 +307,7 @@ def parse_new_missions(src_dir, cache_dir,
                         continue
 
                     topic_started = True
-                    briefing_lines.append(f'<br/><br/>{topic_name}<br/>')
+                    briefing_lines.append(f'<h4>{topic_name}</h4>')
                     continue
 
                 if line.startswith(BRIEFING_FILE_DATA['topic_end']):
