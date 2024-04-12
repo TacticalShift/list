@@ -20,6 +20,7 @@ FIX_NEEDED_TAG = 'FIX NEEDED'
 
 RAW_FILE_EXTENSION = "pbo"
 CACHED_FILE_EXTENSION = "json"
+PATCH_FILE_EXTENSION = "patch"
 IMAGE_FILE_EXTENSION = "jpg"
 
 OUTPUT_LIST_FILE = "MissionsInfo.js"
@@ -60,21 +61,28 @@ def read_settings():
     return settings
 
 
-def check_dirs_exists(src_dir, cache_dir, output_dir, defaults_dir):
+def check_dirs_exists(src_dir, cache_dir, patch_dir, output_dir, defaults_dir):
     """Checks working directories to exists"""
     result = True
     if not os.path.exists(src_dir) or not os.path.isdir(src_dir):
         result = False
-        print('Source directory %s not found!', src_dir)
+        print('Source directory {src_dir} not found!')
+
     if not os.path.exists(cache_dir) or not os.path.isdir(cache_dir):
         result = False
-        print('Cache directory %s not found!', cache_dir)
+        print('Cache directory {cache_dir} not found!')
+
+    if not os.path.exists(patch_dir) or not os.path.isdir(patch_dir):
+        result = False
+        print('Patch directory {patch_dir} not found!')
+
     if not os.path.exists(output_dir) or not os.path.isdir(output_dir):
         result = False
-        print('Output directory %s not found!', output_dir)
+        print('Output directory {output_dir} not found!', )
+
     if not os.path.exists(defaults_dir) or not os.path.isdir(defaults_dir):
         result = False
-        print('Default content directory %s not found!', defaults_dir)
+        print('Default content directory {defaults_dir} not found!', )
 
 
     return result
@@ -355,7 +363,7 @@ def parse_new_missions(src_dir, cache_dir,
         shutil.rmtree(unpacked_dir)
 
 
-def compose_mission_list(cache_dir, output_dir, default_content_dir):
+def compose_mission_list(cache_dir, patch_dir, output_dir, default_content_dir):
     """Reads all files in cache dir and collect data into one structure.
     Then exports data to single file."""
     cached_files = list_filenames_in_dir(cache_dir, CACHED_FILE_EXTENSION)
@@ -366,15 +374,25 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
         return
 
     # Read cached data
-    print("Read and compose")
-    print(cached_files)
+    print(f"Read and compose: {len(cached_files)} file(s)")
     for filename in cached_files:
-        print("Reading file:")
-        print(filename)
-        filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
-        with open(filename, 'r', encoding='utf-8') as cached_file:
+        print(f"Composing file: {filename}")
+
+        cached_filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
+        patch_filename = os.path.join(patch_dir, f'{filename}.{PATCH_FILE_EXTENSION}')
+
+        file_content = None
+        with open(cached_filename, 'r', encoding='utf-8') as cached_file:
             file_content = json.load(cached_file)
-            totals.append(file_content)
+
+        if os.path.exists(patch_filename):
+            print(f"Patching file with {patch_filename}")
+            patch_content = None
+            with open(patch_filename, 'r', encoding='utf-8') as patch_file:
+                patch_content = json.load(patch_file)
+            file_content.update(patch_content)
+
+        totals.append(file_content)
 
     # Delete output dir content
     img_dir = os.path.join(output_dir, OVERVIEW_IMAGE_DIR)
@@ -403,8 +421,9 @@ def main():
     if settings is None:
         return 2
 
-    cache_dir = settings['General']['cache_dir']
     src_dir = settings['General']['source_dir']
+    cache_dir = settings['General']['cache_dir']
+    patch_dir = settings['General']['patch_dir']
     output_dir = settings['General']['output_dir']
     default_content_dir = settings['General']['default_content_dir']
     unpbo_app = (
@@ -415,7 +434,7 @@ def main():
      )
 
     if not check_dirs_exists(
-        src_dir, cache_dir, output_dir, default_content_dir
+        src_dir, cache_dir, patch_dir, output_dir, default_content_dir
     ):
         return 2
 
@@ -431,7 +450,7 @@ def main():
     )
 
     # Compose cached files into a new one
-    compose_mission_list(cache_dir, output_dir, default_content_dir)
+    compose_mission_list(cache_dir, patch_dir, output_dir, default_content_dir)
 
 
 if __name__ == "__main__":
