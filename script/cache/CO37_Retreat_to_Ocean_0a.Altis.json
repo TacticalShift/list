@@ -7,8 +7,9 @@
     "terrain": "Altis",
     "tags": [],
     "overview": "USAF covers the evacuation of valuable equipment and people",
-    "overview_img": "imgs/CO37_Retreat_to_Ocean_0a.Altis.jpg",
+    "overview_img": "imgs/default_overview.jpg",
     "briefing": "<h4>I. Обстановка:</h4>Описание ситуации<h4>А. Враждебные силы:</h4>Описание вражеских сил<h4>Б. Дружественные силы:</h4>Описание дружественных сил<h4>II. Задание:</h4>Описание задач<h4>III. Выполнение:</h4>Описание указаний по выполнению<h4>IV. Поддержка:</h4>Доступная поддержка<h4>V. Сигналы:</h4>Сигналы и радива<h4>VI. Замечания:</h4>Прочие замечания<h4>VII. GSO notes:</h4>-",
     "map_shot": "",
-    "mission_date": "2017-08-30"
+    "mission_date": "2017-08-30",
+    "creation_date": "2019-02-15"
 }

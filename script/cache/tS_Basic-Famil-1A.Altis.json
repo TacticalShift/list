@@ -7,8 +7,9 @@
     "terrain": "Altis",
     "tags": [],
     "overview": "",
-    "overview_img": "imgs/tS_Basic-Famil-1A.Altis.jpg",
+    "overview_img": "imgs/default_overview.jpg",
     "briefing": "<no data>",
     "map_shot": "",
-    "mission_date": "2035-06-24"
+    "mission_date": "2035-06-24",
+    "creation_date": "2021-02-28"
 }
