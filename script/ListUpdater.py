@@ -1,14 +1,30 @@
-import os
+from time import strftime, localtime
+
 import configparser
-import sys
+import filecmp
 import glob
+import hashlib
+import json
+import os
+import re
+import sys
 import subprocess
 import shutil
-import json
-import re
-import hashlib
+
 
 SETTINGS_FILE = "settings.ini"
+PATHS = {
+    "src": '',
+    "cache": '',
+    "output": '',
+    "default_content": ''
+}
+STATS = {
+    "total": 0,
+    "broken": 0,
+    "new": 0,
+    "new_broken": 0
+}
 
 BROKEN_MISSIONS_DIR = "fix_needed"
 
@@ -169,6 +185,10 @@ def parse_new_missions(src_dir, cache_dir,
         if not os.path.exists(target_img):
             return os.path.join(to_dir, DEFAULT_OVERVIEW_IMAGE)
 
+
+        if filecmp.cmp(target_img, PATHS['default_content']):
+            return os.path.join(to_dir, DEFAULT_OVERVIEW_IMAGE)
+
         shutil.copyfile(target_img, image_file)
         return image_file
 
@@ -221,6 +241,12 @@ def parse_new_missions(src_dir, cache_dir,
         year = ''
         month = ''
         day = ''
+        
+        mission_data['creation_date'] = strftime(
+            '%Y-%m-%d', 
+            localtime(os.path.getmtime(path_to_missionsqm))
+        )
+        
         with open(path_to_missionsqm, 'r', encoding='utf-8') as sqm:
             scenario_data_found = False
             for line in sqm.readlines():
@@ -366,11 +392,10 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
         return
 
     # Read cached data
-    print("Read and compose")
-    print(cached_files)
+    STATS['total'] = len(cached_files)
+    print(f"Read and compose {STATS['total']} missions")
     for filename in cached_files:
-        print("Reading file:")
-        print(filename)
+        # print(f"Reading file: {filename}")
         filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
         with open(filename, 'r', encoding='utf-8') as cached_file:
             file_content = json.load(cached_file)
@@ -412,7 +437,8 @@ def main():
         settings['UnpboApp'].get('unpbo_args1', ''),
         settings['UnpboApp'].get('unpbo_args2', ''),
         settings['UnpboApp'].get('unpbo_args3', '')
-     )
+    )
+    PATHS['default_content'] = os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE)
 
     if not check_dirs_exists(
         src_dir, cache_dir, output_dir, default_content_dir
@@ -421,6 +447,7 @@ def main():
 
     # Look for new missions and parse 'em
     new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
+
     parse_new_missions(
         src_dir, cache_dir,
         new_missions, unpbo_app
@@ -433,6 +460,12 @@ def main():
     # Compose cached files into a new one
     compose_mission_list(cache_dir, output_dir, default_content_dir)
 
+    STATS['new'] = len(new_missions)
+    STATS['new_broken'] = len(new_broken_missions)
+    STATS['broken'] = len(os.listdir(os.path.join(cache_dir, BROKEN_MISSIONS_DIR)))
+
 
 if __name__ == "__main__":
-    sys.exit(main())
+    op_code = main()
+    print(STATS)
+    sys.exit(op_code)
