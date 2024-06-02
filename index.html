@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="utf-8"/>
 
-		<title>Миссии Tactical Shift</title>		
-		
+		<title>Миссии Tactical Shift</title>
+
 		<link rel="icon" href="src/img/ts_icon.png">
 		<link rel="stylesheet" href="src/style.css">
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -28,10 +28,11 @@
 				<p class="modal-briefing">Example text</p>
 			</div>
 		</div>
-	
+
 		<div id="header">
 			<div id="header-title">
 				<span><a href="https://tacticalshift.github.io" style="text-decoration: none; color: inherit;">tS</a></span> <tt id='header-sans'>Операции</tt>
+				<button id="header-btn-up" title="Вернуться наверх">Наверх!</button>
 				<button id="header-btn-select-random" title="Выбрать случайную миссию (с учетом фильтров)">Мне повезет!</button>
 			</div>
 		</div>
@@ -39,49 +40,52 @@
 		<div id="wrapper">
 			<div max-width="512px">
 				<table id="grid-filter">
-					<tr>
-						<th class="clickable" colspan="2">Фильтры</th>
-					</tr>
-					<tr class="filter-line">
-						<td>По наименованию</td>
-						<td filter-type="title" class="td-filter-inputs"><input type="text" /></td>
-					</tr>
-					<tr class="filter-line">
-						<td>По карте</td>
-						<td filter-type="terrain" class="td-filter-inputs">
-							<select></select>
-						</td>
-					</tr>
-					<tr class="filter-line">
-						<td>Кол-во слотов, &gt;=</td>
-						<td filter-type="slots-gte" class="td-filter-inputs"><input type="number" /></td>
-					</tr>
-					<tr class="filter-line">
-						<td>Кол-во слотов, &lt;= </td>
-						<td filter-type="slots-lte" class="td-filter-inputs"><input type="number" /></td>
-					</tr>
-					<tr class="filter-line">
-						<td>По тегам</td>
-						<td filter-type="tags" class="td-filter-inputs"></td>
-					</tr>
-					<tr style="text-align: right" class="filter-line">
-						<td colspan="2" >
-							<button id="btn-filter-url" class="btn-filter" title="Copy URL">Скопировать</button>
-							<button id="btn-reset-filter" class="btn-filter">Сбросить</button>
-							<!-- <button id="btn-filter" class="btn-filter btn-filter-100">Filter</button> -->
-						</td>
-					</tr>
+					<thead>
+						<th class="clickable" colspan="2">
+							<span class="filter-title">Фильтры</span>
+							<span class="filter-reset" title="Сбросить" action="reset">&times;</span>
+						</th>
+					</thead>
+					<tbody>
+						<tr class="filter-line">
+							<td>По наименованию</td>
+							<td filter-type="title" class="td-filter-inputs"><input type="text" /></td>
+						</tr>
+						<tr class="filter-line">
+							<td>По карте</td>
+							<td filter-type="terrain" class="td-filter-inputs">
+								<select></select>
+							</td>
+						</tr>
+						<tr class="filter-line">
+							<td>Кол-во слотов, &gt;=</td>
+							<td filter-type="slots-gte" class="td-filter-inputs"><input type="number" /></td>
+						</tr>
+						<tr class="filter-line">
+							<td>Кол-во слотов, &lt;= </td>
+							<td filter-type="slots-lte" class="td-filter-inputs"><input type="number" /></td>
+						</tr>
+						<tr class="filter-line">
+							<td>По тегам</td>
+							<td filter-type="tags" class="td-filter-inputs"></td>
+						</tr>
+						<tr style="text-align: right" class="filter-line">
+							<td colspan="2" >
+								<button id="btn-filter-url" class="btn-filter" title="Copy URL">Скопировать</button>
+								<button id="btn-reset-filter" class="btn-filter">Сбросить</button>
+								<!-- <button id="btn-filter" class="btn-filter btn-filter-100">Filter</button> -->
+							</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 			<div>
 				<table id="grid">
 					<tr>
-						<th class="th-w clickable" column_name="title" sortable="true">Название</th>
+						<th class="th-w" column_name="overview_img" sortable="false">Миссия</th>
+						<th class="th-a" column_name="tags" sortable="false">Теги</th>
 						<th class="th-n clickable" column_name="player_count" sortable="true">Слоты</th>
 						<th class="th-n clickable" column_name="terrain" sortable="true">Карта</th>
-						<th class="clickable" column_name="overview" sortable="true">Описание</th>
-						<th class="th-a" column_name="tags" sortable="false">Теги</th>
-						<th class="th-a" column_name="briefing" sortable="false">Детали</th>
 					</tr>
 				</table>
 			</div>

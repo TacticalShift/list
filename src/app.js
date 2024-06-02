@@ -38,10 +38,10 @@ var GridModelClass = function (data) {
 					return false;
 				};
 			}
-			
+
 			return true;
 		}
-		
+
 		, terrainValues: []
 		, tagsValues: []
 		, field2filter: {
@@ -58,7 +58,7 @@ var GridModelClass = function (data) {
 			, slotsTo: "player_count"
 			, tags: "tags"
 		},
-		
+
 		currentFilter: {}
 	}
 
@@ -78,7 +78,7 @@ var GridModelClass = function (data) {
 			let v1 = a[param];
 			let v2 = b[param];
 			let r = 0;
-			
+
 			if (v1 > v2) {
 				r = 1;
 			} else if (v1 < v2) {
@@ -101,12 +101,12 @@ var GridModelClass = function (data) {
 		// Params: { "title":"...", "tags": [...] }
 		this.resetFilter();
 		this.filter.currentFilter = filterData;
-		
-		filterData = Object.entries(filterData);		
+
+		filterData = Object.entries(filterData);
 		if (filterData.length == 0) { // Exit on filter reset action
 			// TODO: Need to handle FIX NEEDED tag somehow?
-			this.refreshView(); 
-			return; 
+			this.refreshView();
+			return;
 		}
 
 		let filteredIndexes = [];
@@ -117,7 +117,7 @@ var GridModelClass = function (data) {
 			const filterType = this.filter.field2filter[filterField];
 			const schemeField = this.filter.field2scheme[filterField];
 
-			const filterFunction = this.filter[filterType];			
+			const filterFunction = this.filter[filterType];
 			this.data.forEach(function (el) {
 				const result = filterFunction(el[schemeField], filterValue);
 
@@ -133,7 +133,7 @@ var GridModelClass = function (data) {
 
 		this.refreshView();
 	};
-	
+
 	this.resetFilter = function () {
 		this.filtered = [];
 		this.filteredOut = [];
@@ -155,12 +155,12 @@ var GridModelClass = function (data) {
 					terrainsLowerCase.push(terrainName);
 					terrains.push(el.terrain)
 				}
-				
+
 				for (let i = 0; i < el.tags.length; i++) {
 					if (!tags.includes(el.tags[i])) {
 						tags.push(el.tags[i]);
 					};
-				};				
+				};
 			});
 
 			terrains.sort();
@@ -172,18 +172,18 @@ var GridModelClass = function (data) {
 
 	this.selectRandomFiltered = function (filterData) {
 		this.filterBy(filterData);
-		
-		let items = [];		
+
+		let items = [];
 		this.resetIterator();
 		while (this.hasNext()) { items.push(this.next()); }
-		
-		items = items.filter(function (value, indx, arr) { 
-			return !(value.tags.includes("FIX NEEDED")) 
+
+		items = items.filter(function (value, indx, arr) {
+			return !(value.tags.includes("FIX NEEDED"))
 		});
 		if (items.length == 0) { return; };
-		
+
 		let item = items[Math.floor(Math.random() * items.length)];
-		this.refreshMissionDetails(item.id);	
+		this.refreshMissionDetails(item.id);
 	};
 
 	/* Update view */
@@ -212,7 +212,7 @@ var GridModelClass = function (data) {
 		}
 		window.history.pushState({ path: url }, '', url);
 	};
-	
+
 	/* Iterator */
 	this.itrPosition = 0;
 
@@ -239,7 +239,7 @@ var GridModelClass = function (data) {
 	this.hasNext = function () {
 		let isOutOfBounds = (this.itrPosition >= this.size) || (this.itrPosition < 0);
 		if (isOutOfBounds) { return false; }
-		
+
 		let isFilteredOut = this.filteredOut.includes(this.data[this.itrPosition]["id"]);
 		return !isFilteredOut;
 	};
@@ -267,19 +267,22 @@ var GridViewClass = function () {
 	this.$grid = "#grid";
 	this.$popup = "#popup";
 
-	this.$filter_head = "#grid-filter tr th";
+	this.$filter_head = "#grid-filter thead th";
+	this.$filter_headTitle = "#grid-filter thead .filter-title";
+	this.$filter_headBtnClose = "#grid-filter thead .filter-reset";
+
 	this.$filter_terrain = "#grid-filter tr td[filter-type='terrain'] select";
 	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
 	this.$filter_lines = ".filter-line";
 
-	this.header_columns = ["title","player_count","terrain","overview","tags","briefing"];
+	this.header_columns = ["title","tags","player_count","terrain"];
 	this.controller = null;
 
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
 		const filterFixNeededExplicitly = this.controller.collectFilterActiveTag().includes(FIX_NEEDED_TAG)
-		
+
 		let gridSize = 0;
 
 		while (model.hasNext()) {
@@ -287,28 +290,33 @@ var GridViewClass = function () {
 			if (info.tags.includes(FIX_NEEDED_TAG) && !filterFixNeededExplicitly) {
 				continue;
 			}
-			
+
 			const tags = this.tags_compileTagsHTML(info.tags, true);
 			const title = (info.title == "null") ? info.filename : info.title;
 
-			$(this.$grid).append(`<tr class="grid-line" mission-id="${info.id}">`
-				+ `<td>${title}</td>`
+			$(this.$grid).append(`<tr class="grid-line btn-see-more" mission-id="${info.id}">`
+				+ `<td class='td-main-info'>`
+				+ `  <div class='td-main-info-name'><img loading='lazy' src='${info.overview_img}'/>${title}</div>`
+				+ `  <div class='td-main-info-desc'>${info.overview}</div>`
+				+ `</td>`
+				+ `<td class="td-tags td-center">${tags}</td>`
 				+ `<td class="td-center">${info.player_count}</td>`
-				+ `<td class='clickable' filter-type='terrain'>${info.terrain}</td>`
-				+ `<td class="td-overview">${info.overview}</td>`
-				+ `<td class="td-tags">${tags}</td>`
-				+ `<td class="td-center btn-see-more">⇱</td>`
+				+ `<td class='td-center' filter-type='terrain'>`
+				+ `  <div class='terrain clickable'>${info.terrain}</div>`
+				+ `</td>`
 			+ "</tr>");
-			
+
 			++gridSize;
 		}
-		
+
 		if (model.isFiltered()) {
 			$(this.$filter_head).toggleClass("filter-active", true);
-			$(this.$filter_head).html(`Выбрано миссий: ${gridSize}`);
+			$(this.$filter_headTitle).html(`Выбрано миссий: ${gridSize}`);
+			$(this.$filter_headBtnClose).css('display', 'inline-block');
 		} else {
 			$(this.$filter_head).toggleClass("filter-active", false);
-			$(this.$filter_head).html(`Все миссии (${gridSize})`);
+			$(this.$filter_headTitle).html(`Все миссии (${gridSize})`);
+			$(this.$filter_headBtnClose).css('display', 'none');
 			this.filter_resetFilter();
 		}
 
@@ -318,7 +326,7 @@ var GridViewClass = function () {
 
 	this.clearGrid = function() {
 		this.controller.removeEvents();
-		$(this.$grid).find("tr[class='grid-line']").each(function () { $(this).remove(); });
+		$(this.$grid).find(".grid-line").each(function () { $(this).remove(); });
 	}
 
 	this.header_showSortedIcon = function (column, isAscending) {
@@ -341,14 +349,14 @@ var GridViewClass = function () {
 			const displayName = valuesTerrain[i]
 			$(this.$filter_terrain).append(`<option value="${displayName.toLowerCase()}">${displayName}</option>`);
 		}
-		
+
 		for (let i = 0; i < valuesTags.length; ++i) {
 			let tag = valuesTags[i];
 			let tagData = TagsMarkdown[tag];
 			if (tagData == null) { tagData = TagsMarkdown.default; }
-			
+
 			$(this.$filter_tags).append(
-				`<span >` + 
+				`<span >` +
 				`<input type='checkbox' id="${tag}" style="display:none" />` +
 				`<label class='tag clickable td-filter-tag td-inactive-tag' for="${tag}" style="background-color: ${tagData.bg}; color: ${tagData.text}" title="${tagData.tooltip}">${tag}</label>` +
 				`</span>`
@@ -361,25 +369,25 @@ var GridViewClass = function () {
 	this.filter_resetFilter = function () {
 		// Clears filter inputs, uncheck all tags and mark them as inactive
 		$(`.td-filter-inputs input, .td-filter-inputs select`).each(function () { $(this).val("") });
-		$(`.td-filter-inputs span`).each(function () { 
+		$(`.td-filter-inputs span`).each(function () {
 			$(this).find(`input[type='checkbox']`).prop("checked", false);
 			$(this).find(`label`).addClass("td-inactive-tag");
 		});
 	}
-	
+
 	this.modal_showPopup = function (data) {
 		let title = (data.title == "") ? data.filename : data.title;
-		
+
 		$(`${this.$popup} h1`).text(title);
-		
-		
+
+
 		$(`${this.$popup} p[class='modal-terrain']`).html(
 			`на <span>${data.terrain}</span>` +
 			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
 			` | до ${data.player_count} игроков` +
-			((data.author == 'Unknown') ? "" : ` | by ${data.author}`)
+			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`)
 		);
-		$(`${this.$popup} span[class='modal-guid']`).text("[GUID:" + data.id + "][Filename:" + data.filename + "]");
+		$(`${this.$popup} span[class='modal-guid']`).text(`[GUID:${data.id}][Filename:${data.filename}][Created:${data.creation_date}]`);
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
@@ -391,10 +399,10 @@ var GridViewClass = function () {
 	this.modal_hidePopup = function () {
 		$(this.$popup).css("display","none");
 	}
-	
+
 	this.tags_compileTagsHTML = function (tags, isClickable = true, showDescription = false) {
 		let tagsHtml = [];
-		
+
 		const tagClasses = isClickable ? "tag clickable" : "tag";
 
 		tags.forEach(function (tag) {
@@ -402,14 +410,14 @@ var GridViewClass = function () {
 			if (tagData == null) {
 				tagData = TagsMarkdown.default;
 			}
-			
+
 			let text = "";
 			if (!showDescription) {
 				text = `<p class="${tagClasses}" style="background-color: ${tagData.bg}; color: ${tagData.text}" title="${tagData.tooltip}">${tag}</p>`
 			} else {
 				text = `<p class="${tagClasses}" style="background-color: ${tagData.bg}; color: ${tagData.text}" >[${tag}] ${tagData.tooltip}</p>`
 			}
-			
+
 			tagsHtml.push(text);
 		});
 
@@ -421,19 +429,21 @@ var GridControllerClass = function () {
 	this.model = null;
 	this.headerEventsSet = false;
 	this.filtersCollapsed = true;
-	
+
 	this.$filter_random = "#header-btn-select-random";
-	
+	this.$scroll_top = "#header-btn-up";
+
 	this.$popup = "#popup";
-	
+
 	this.$grid_sortable = "#grid th[sortable='true']";
 	this.$btn_popupClose = "#popup span[class='close']";
 	this.$btn_popupRandom = "#popup span[class='random']";
-	this.$btn_seeMore = "#grid tr td[class*='btn-see-more']";
+	this.$btn_seeMore = "#grid tr[class*='btn-see-more']";
 	this.$btn_terrain = "#grid tr td[filter-type='terrain']";
 	this.$btn_tags = "#grid tr td p[class='tag clickable']";
-	
-	this.$filter_head = "#grid-filter tr th";
+
+	this.$filter_head = "#grid-filter thead th";
+	this.$filter_headResetBtn = "#grid-filter thead .filter-reset"
 	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
 	this.$filter_copyURL = "#btn-filter-url";
 	this.$filter_resetFitler = "#btn-reset-filter";
@@ -453,7 +463,7 @@ var GridControllerClass = function () {
 
 	this.initEvents = function () {
 		this.removeEvents();
-		
+
 		/* Static elements: Grid header, Filter form, Modal window */
 		if (!this.headerEventsSet) {
 			/* Sortable header */
@@ -465,7 +475,13 @@ var GridControllerClass = function () {
 
 			/* Filters */
 			$(this.$filter_head).on("click", this, function (event) {
-				let controller = event.data;
+				if (event.target.hasAttribute('action')) {
+					const model = event.data.model;
+					model.filterBy([]);
+					return
+				}
+
+				const controller = event.data;
 				controller.filtersCollapsed = !controller.filtersCollapsed; // Toggle filter collapsed
 				if (controller.filtersCollapsed) {
 					$(controller.$filter_lines).fadeOut(250);
@@ -473,7 +489,7 @@ var GridControllerClass = function () {
 					$(controller.$filter_lines).fadeIn(250);
 				}
 			});
-			
+
 			$(this.$filter_byTitle).on("change",  this, function (event) {
 				let controller = event.data;
 				controller.executeFiltering();
@@ -493,7 +509,7 @@ var GridControllerClass = function () {
 
 			$(this.$filter_tags).on("click", this, function (event) {
 				if (event.target.id == "") { return };
-				
+
 				const controller = event.data;
 				const tagItem = event.target.labels[0];
 				if (event.target.checked) {
@@ -503,7 +519,7 @@ var GridControllerClass = function () {
 				};
 				controller.executeFiltering();
 			});
-			
+
 			$(this.$filter_doFilter).on("click", this, function (event) {
 				let controller = event.data;
 				controller.executeFiltering();
@@ -518,11 +534,17 @@ var GridControllerClass = function () {
 				let controller = event.data;
 				controller.copyFilteredURL();
 			});
-			
+
 			$(this.$filter_random).on("click", this, function (event) {
 				let controller = event.data;
 				controller.filterAndSelectRandom();
 			});
+
+			$(this.$scroll_top).on("click", this, (event)=> {
+				$("#wrapper").animate({scrollTop: 0})
+			})
+
+
 			/* Modal window */
 			$(this.$popup).on("click", this, function (event) {
 				if (event.target.id !== "popup") return
@@ -543,19 +565,19 @@ var GridControllerClass = function () {
 		/* Details button */
 		$(this.$btn_seeMore).on("click", this, function (event) {
 			let model = event.data.model;
-			let missionId = $(this).parent().attr("mission-id");
+			let missionId = $(this).attr("mission-id");
 
 			model.refreshMissionDetails(missionId);
 		});
-		
+
 		/* Terrain */
 		$(this.$btn_terrain).on("click", this, function (event) {
 			let controller = event.data;
 			let terrainName = event.target.innerText;
-			controller.updateAndFilter({"terrain": terrainName}); 
-			
+			controller.updateAndFilter({"terrain": terrainName});
+
 		});
-		
+
 		/* Tags */
 		$(this.$btn_tags).on("click", this, function (event) {
 			let controller = event.data;
@@ -563,24 +585,24 @@ var GridControllerClass = function () {
 			controller.updateAndFilter({"tags": [tagname]});
 		});
 	};
-	
+
 	this.executeFiltering = function () {
 		let params = this.collectFilterParams();
 		this.model.filterBy(params);
 	};
-	
+
 	this.collectFilterActiveTag = function () {
 		let byTags = [];
-		$(`.td-filter-inputs span`).each(function () { 
+		$(`.td-filter-inputs span`).each(function () {
 			let $tagFilter = $(this).find(`input[type='checkbox']`);
 			if ($tagFilter.prop("checked")) {
 				byTags.push($tagFilter.prop("id"));
 			}
 		});
-		
+
 		return byTags
 	}
-	
+
 	this.collectFilterParams = function () {
 		let byTitle = $(this.$filter_byTitle).val();
 		let byTerrain = $(this.$filter_byTerrain).val();
@@ -588,46 +610,46 @@ var GridControllerClass = function () {
 		let bySlotsTo = $(this.$filter_bySlotsTo).val();
 		let byTags = this.collectFilterActiveTag();
 		/*
-		$(`.td-filter-inputs span`).each(function () { 
+		$(`.td-filter-inputs span`).each(function () {
 			let $tagFilter = $(this).find(`input[type='checkbox']`);
 			if ($tagFilter.prop("checked")) {
 				byTags.push($tagFilter.prop("id"));
 			}
 		});
 		*/
-        
+
 		let params = {};
-		
+
 		// Reset filters if empty filter used
 		if (byTitle == "" && byTerrain == "" && bySlotsFrom == "" && bySlotsTo == "" && byTags.length == 0) {
 			return params;
 		}
-        
+
 		if (byTitle != "") { params["title"] = byTitle; };
 		if (byTerrain != "") { params["terrain"] = byTerrain; };
 		if (bySlotsFrom != "") { params["slotsFrom"] = parseInt(bySlotsFrom); };
 		if (bySlotsTo != "") { params["slotsTo"] = parseInt(bySlotsTo); };
 		if (byTags.length > 0) { params["tags"] = byTags; };
-		
+
 		return params;
 	};
-	
+
 	this.getCurrentFilterParams = function () {
 		const params = this.model.filter.currentFilter;
-		
-		
+
+
 	}
-	
+
 	this.updatedFilterParams = function (addParams) {
 		// Updates current filtering parameters
 		// Params: {"tags": [...], "terrain": "Abel"}
 		let params = this.collectFilterParams();
 		let entries = Object.entries(addParams);
-		
+
 		entries.forEach(function (e) {
 			let key = e[0];
 			let value = e[1];
-			
+
 			if (params.hasOwnProperty(key)) {
 				let currentValue = params[key];
 				if (typeof currentValue === "object") {
@@ -635,30 +657,30 @@ var GridControllerClass = function () {
 					let set = new Set();
 					currentValue.forEach(function (tag) { set.add(tag); });
 					value.forEach(function (tag) { set.add(tag); });
-					
-					value = Array.from(set); 
+
+					value = Array.from(set);
 				} else {
 					// String or number - just overwrite
-				}			
+				}
 			}
-			
+
 			params[key] = value;
 		});
-		
+
 		return params;
 	};
-	
+
 	this.updateFilter = function (addParams) {
 		// Updates filter's UI with update params (selected tags and stuff)
 		let params = this.updatedFilterParams(addParams);
-		
+
 		// Update UI
 		$(this.$filter_byTitle).val( params.hasOwnProperty("title") ? params.title : "" );
-		$(this.$filter_byTerrain).val( params.hasOwnProperty("terrain") ? params.terrain.toLowerCase() : "" );		
+		$(this.$filter_byTerrain).val( params.hasOwnProperty("terrain") ? params.terrain.toLowerCase() : "" );
 		$(this.$filter_bySlotsFrom).val( params.hasOwnProperty("slotsFrom") ? params.slotsFrom : "" );
 		$(this.$filter_bySlotsTo).val( params.hasOwnProperty("slotsTo") ? params.slotsTo : "" );
 		if (params.hasOwnProperty("tags")) {
-			$(`.td-filter-inputs span`).each(function () { 
+			$(`.td-filter-inputs span`).each(function () {
 				if (params.tags.includes( $(this).find(`input[type='checkbox']`).prop("id") )) {
 					$(this).find(`input[type='checkbox']`).prop("checked",true);
 					$(this).find(`label`).removeClass("td-inactive-tag");
@@ -669,31 +691,31 @@ var GridControllerClass = function () {
 			});
 		} else {
 			// Disable tags selection
-			$(`.td-filter-inputs span`).each(function () { 
+			$(`.td-filter-inputs span`).each(function () {
 				$(this).find(`input[type='checkbox']`).prop("checked",false);
 				$(this).find(`label`).addClass("td-inactive-tag");
 			});
 		};
 	};
-	
+
 	this.updateAndFilter = function (addParams) {
 		// Params: {"tags": [...], "terrain": "Abel"}
 		this.updateFilter(addParams);
 		this.model.filterBy(this.collectFilterParams());
 	}
-	
+
 	this.copyFilteredURL = function () {
 		let params = this.collectFilterParams();
 		let entries = Object.entries(params);
 		if (entries.length == 0) {
 			return;
 		}
-		
+
 		let urlParams = [];
 		entries.forEach(function (e) {
 			let key = e[0];
 			let value = e[1];
-			
+
 			if (typeof value === "object") {
 				// Array (tags)
 				let strTags = encodeURI(value.join(","));
@@ -701,28 +723,26 @@ var GridControllerClass = function () {
 			} else {
 				let strParam = encodeURI(value);
 				urlParams.push(`${key}=${value}`);
-			}			
+			}
 		});
-		
+
 		let url = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + urlParams.join("&");
         sTemp = "<input id=\"copy_to_clipboard\" value=\"" + url + "\" />"
         $("body").append(sTemp);
         $("#copy_to_clipboard").select();
         document.execCommand("copy");
-        $("#copy_to_clipboard").remove();      
-		
-		console.log("URL Copied: " + url);
+        $("#copy_to_clipboard").remove();
 	};
-	
+
 	this.setUpFilterFromURL = function () {
-		let url = decodeURI( window.location.href );		
+		let url = decodeURI( window.location.href );
 		let params = {};
 		let validParams = ["title","terrain","slotsFrom","slotsTo","tags"];
 		let urlParams = new URLSearchParams(window.location.search);
-		
+
 		validParams.forEach(function (validParam) {
 			if (urlParams.has(validParam)) {
-				
+
 				if (validParam == "tags") {
 					let tags = urlParams.get(validParam);
 					params[validParam] = tags.substring(1, tags.length - 1).split(",")
@@ -731,25 +751,35 @@ var GridControllerClass = function () {
 				}
 			};
 		});
-		
+
 		this.model.updateURL("");
 		this.updateAndFilter(params);
 	};
 
 	this.filterAndSelectRandom = function () {
 		let params = this.collectFilterParams();
-		
+
 		if (params.hasOwnProperty("tags")) {
 			let indx = params.tags.indexOf("FIX NEEDED");
 			if (indx > -1) { params.tags.splice(indx,1); }
 		}
-		
+
 		this.model.selectRandomFiltered(params);
 	};
 }
 
+
 $( document ).ready(function () {
 	console.log("KEK Ready");
+	$("#header-btn-up").hide()
+	$('#wrapper').on("scroll", (e)=>{
+		const scrollPos = document.querySelector("#wrapper").scrollTop
+		if (scrollPos < 200) {
+			$("#header-btn-up").hide()
+		} else {
+			$("#header-btn-up").show()
+		}
+	})
 
 	GridApp = {};
 	GridApp.model = new GridModelClass(MissionsInfo);
@@ -762,7 +792,7 @@ $( document ).ready(function () {
 
 	/* Init */
 	GridApp.model.refreshView();
-	
+
 	let urlParams = new URLSearchParams(window.location.search);
 	if (urlParams.has('guid')) {
 		let guid = urlParams.get('guid');
@@ -770,4 +800,6 @@ $( document ).ready(function () {
 	} else {
 		GridApp.controller.setUpFilterFromURL();
 	}
+
+
 })

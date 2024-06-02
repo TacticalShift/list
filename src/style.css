@@ -55,6 +55,15 @@ body {
 	border-radius: 0px 8px 8px 8px;
 }
 
+#header-btn-up {
+	cursor: pointer;
+	position: absolute;
+	top: 8px;
+	right: 178px;
+	height: 30px;
+	width: 128px;
+}
+
 #header-btn-select-random {
 	cursor: pointer;
 	position: absolute;
@@ -67,26 +76,32 @@ body {
 /* Grid
 */
 #wrapper {
-	padding: 5px;
+	padding: 5px 10% 5px 10%;
 	height: 94%;
 	overflow-y: overlay;
 }
 
+@media screen and (max-width: 1600px) {
+	#wrapper {
+		padding: 5px;
+	}
+}
+
 #grid {
 	border-collapse: collapse;
-	border: 1px solid #999999;
+	--border: 1px solid #999999;
 	width: 100%;
 }
 
 #grid th {
 	background-color: #cccccc;
-	border: 1px solid #777777;
+	border-bottom: 1px solid #777777;
 	height: 30px;
 	padding: 10px 5px 10px 5px;
 }
 
 #grid tr:hover {
-	background-color: #cccccc;
+	/* background-color: #cccccc; */
 }
 
 .th-w {
@@ -105,7 +120,32 @@ body {
 
 td {
 	padding: 10px 5px 10px 5px;
-	border: 1px solid #999999;
+	border-bottom: 1px solid #99999970;
+}
+
+.td-main-info {
+	display: flex;
+    align-content: stretch;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.td-main-info-name {
+	white-space: wrap;
+	display: flex;
+    align-content: stretch;
+    align-items: center;
+    justify-content: space-between;
+	width: 50%;
+
+}
+.td-main-info-desc {
+	white-space: wrap;
+	width: 45%;
+}
+
+.td-main-info img {
+	max-width: 256px;
 }
 
 .td-center {
@@ -119,7 +159,11 @@ td {
 
 .td-tags {
 	max-width: 80px;
-	text-align: center;
+}
+
+.td-tags .tag:hover {
+	border: 2px solid #00000037;
+	padding: 0px;
 }
 
 .tag {
@@ -131,13 +175,23 @@ td {
 	text-align: center;
 }
 
+.terrain {
+	display: inline-block;
+	border-radius: 7px;
+	padding: 5px;
+}
+.terrain:hover {
+	border: 2px solid #00000037;
+	padding: 3px;
+}
+
 .btn-see-more {
 	color: #252525;
 	cursor:pointer;
 }
 
 .btn-see-more:hover {
-	background-color: #c52334;
+	background-color: #c52333bd;
 	color: white;
 }
 
@@ -149,7 +203,7 @@ td {
 
 	border-collapse: collapse;
 	border: 1px solid #999999;
-	
+
 	min-width: 400px;
 }
 
@@ -159,6 +213,15 @@ td {
 
 	background-color: #cccccc;
 	padding: 5px;
+}
+
+.filter-reset {
+	padding: 0px;
+	margin-left: 2%;
+}
+
+.filter-reset:hover {
+	color: #333
 }
 
 .filter-active {
@@ -180,7 +243,7 @@ td {
 }
 
 .td-filter-tag {
-	display: inline-block;	
+	display: inline-block;
 }
 
 .td-inactive-tag {
@@ -194,12 +257,12 @@ td {
 }
 
 .btn-filter-100 {
-	
+
 	width: 100px;
 }
 
 
-/* Modal 
+/* Modal
 */
 .modal {
 	display: none; /* Hidden by default */
@@ -247,13 +310,13 @@ td {
 	font-size: 75px;
 	font-weight: bold;
     line-height: 55px;
-	
+
 	/*
 	position: fixed;
 	top: 200px;
 	right: 170px;
 	*/
-	
+
 	transition: transform  0.2s;
 }
 
@@ -269,13 +332,13 @@ td {
 	float: right;
 	font-size: 50px;
 	font-weight: bold;
-	
+
 	/*
 	position: fixed;
 	top: 210px;
 	right: 120px;
 	*/
-	
+
 	transition: transform  0.4s;
 }
 
