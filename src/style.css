@@ -146,6 +146,7 @@ td {
 
 .td-main-info img {
 	max-width: 256px;
+	border-radius: 0px 20px 20px 20px;
 }
 
 .td-center {
