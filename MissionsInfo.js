@@ -6,7 +6,9 @@ var MissionsInfo = [
         "author": "10Dozen",
         "player_count": 18,
         "terrain": "Malden",
-        "tags": [],
+        "tags": [
+            "SPECOPS"
+        ],
         "overview": "US SOCOM vs Angry russkies PMC at nuclear crisis brawl",
         "overview_img": "imgs/BA18-Malden-Missile-Crisis-1C.Malden.jpg",
         "briefing": "<h4>I. Обстановка:</h4>Власти Демократической Республики Малден недавно отказались от закупок нефтепродуктов у российской компании 'Ямал-СПГ' и начали закупать их у США. Долгая и упорная борьба топ-менеджеров и политиков, казалось бы, разрешила конфликт, но внезапно на одном из островов архипелага появились неопознанные вооружённые люди (прибывшие, судя по всему, на ролкере под флагом Тайланда).<br /><br />Командир этих сил, Полковник Рахманинов, поставил правительству Малдена жёсткий ультиматум, выполнение которого включает в себя прекращение любого сотрудничества с США. Это требование подкреплено очень серьёзными аргументами силы - разведка доложила о наличии у боевиков Рахманинова тактического ракетного комплекса SS-21 Scarab ('Точка-У'), возможно с ядерными зарядами. Уровень DEFCON был уменьшен до второго. Последний раз это происходило во время Карибского кризиса.<br /><br />Спецназ SOCOM незамедлительно прибыл на место эскалации вооружённого конфликта и готов предотвратить его силовым путём. Ракетные комплексы боевиков угрожают американским базам в Турции и в Средиземном море, так что уничтожение пусковых установок является первоочередной задачей для США.<h4>А. Враждебные силы:</h4>Около роты боевиков под командованием Полковника Рахманинова.<br /><br />По свидетельствам очевидцев - рахманиновцы вооружены советским оружием и техникой. Подтверждено наличие легкой бронетехники (БТРы, БМП-2) и зенитных орудий (ЗУ-23-2).<br /><br />На фотографиях со спутника обнаружились 3 комплекса SS-21 Scarab.<h4>Б. Дружественные силы:</h4>Сводный взвод спецназа SOCOM, кодовое имя RIVEN 1'1:<br /><br />- RIVEN 1'1 - 13 операторов<h4>II. Задание:</h4>1. Уничтожить 3 пусковые установки SS-21 Scarab ('Точка-У')<br />2. Отступить в зону эвакуации 'Yankee'<h4>III. Выполнение:</h4>- В связи с наличием средств ПВО, доставка на остров будет происходить морским путем (на лодках zodiac) на пляж Red.<br /><br />- Похоже, что положение ОТРК периодически меняют, поэтому у нас нет достоверных данных о местоположении каждой машины. Вам придется осмотреть все возможные позиции (отмечены на карте как Obj Alpha - Delta).<br /><br />- После того как все установки будут уничтожены или при невозможности продолжать выполнение задачи - отступайте на лодках до зоны эвакуации.<br /><br />- Не сильно полагайтесь на поддержку авиации. Противник ведет активную постановку радио-электронных помех и развернул системы ПВО, точность ударов с воздуха может быть значительно снижена.<h4>IV. Поддержка:</h4>- 3х лодка Zodiac <font color='#a1ff00'>(дополнительная аммуниция и взрывчатка)</font><br />- Звено F-22A, позывной Viper 1`1 <font color='#a1ff00'>(8 JDAM)</font><h4>V. Сигналы:</h4>1'1 - SR CH 1<br /><br />Link-16 protocol - Viper 1`1<h4>VI. Замечания:</h4><font color='#12C4FF' size='14'>Запрос авиаудара (JDAM)</font><br /><br /> 1. Для инициализации протокола запроса откройте карту и выберите Viper 1`1 из списка поддержки в нижнем левом углу.<br /> 2. Чтобы воспользоваться поддержкой с воздуха вам нужно иметь ДВ рацию.<br /> 3. Удары могут наноситься только в районе зоны операции (незатененная область на карте).<br /> 4. Количество ударов ограничено, каждый запрос подразумевает использование только 1 JDAM. После израсходования всех боеприпасов самолеты уйдут на базу и будут доступны не раньше чем через 30 минут.<br /> 5. Для запроса удара требуется ввод координат точки удара в формате 8-grid (XXXX YYYY, по карте слева-направо, снизу-вверх; например, центр квадрата 102 041 должен быть указан как 1025 0415).<br /> 6. Т.к. в районе острова идет активная постановка помех, ожидайте значительную потерю точности JDAM (контролируйте каждый удар визуально, чтобы внести корректировку для следующего удара).<h4>А. Враждебные силы:</h4>Скорее всего американцы попробуют уничтожить пусковые установки с помощью спецназа. Можно ожидать от одного до трех отрядов с легким вооружением и некоторым количеством ПТ средств, однако шансов незаметно высадить какую-либо технику у них не будет.<br /><br />Имейте ввиду, что спецназ будет использовать глушители, поэтому не сильно полагайтесь на слух.<br /><br />От ударов с воздуха нас прикроет развернутые комплексы ПВО.<h4>Б. Дружественные силы:</h4>1ая краснознаменная гвардейская мотострелковая рота им. Рахманинова:<br /><br />- 1 мсо - 9 чел. на \" + _mso1veh + \" (на боевом дежурстве)<br />- 2 мсо - 9 чел. на \" + _mso2veh + \" (на боевом дежурстве)<br />- 3 и 4 мсо (в охранении пусковых установок)<br />- 5 мсо (патруль восточной части острова)<br /><br />1ая бригада ПВО им. Юрия Башмета<h4>II. Задание:</h4>1. Предотвратить уничтожение установок 'Точка-У' на площадках 1, 2 и 3 (как минимум 1 установка должна уцелеть)<br /><h4>III. Выполнение:</h4>Отделения 1 и 2 выделены как мобильный резерв в случае, если прочие силы 1ой мср столкнутся с противником. Вам не следует покидать свое расположение (порт) до тех пор, пока союзные силы не обнаружат противника и запросят поддержки.<br /><br />Имейте ввиду, что противник будет вести охоту за техникой как с помощью подствольных и ПТ-гранатометов, так и с использованием ПТ-мин.<br /><br />Нам нужно защитить ОТРК, а не убить как можно больше американцев. Не стоит поддаваться на провокации и пытаться гонятся за ними.<h4>IV. Поддержка:</h4>- 1х бронеавтомобиль 'Тигр' (невооруженный)<br />- 2х автомобиль УАЗ<h4>V. Сигналы:</h4>LR 72.2MHz<br /><br />1'1 - SR CH 1<br />1'2 - SR CH 2<h4>VI. Замечания:</h4>- Вам запрещено покидать расположение (порт) до тех пор, пока союзные силы не запросят подкрепление или не начнет работать ПВО (в этом случае вам следует сменить позицию, чтобы не стать мишенью для авиации).<br /><br />dzn Casual Gaming: вам разрешено использовать следующие функции:<br />  - Fatigue / OFF<br />  - Vehicle Servies: Add driver (в случае проблем с тем, который был выдан изначально)<br />  - Auto-Heal включен в миссию, самим вызывать лечение запрещено!<br /><br />dzn GoTacs: вам разрешено искользовать все функции со следующими ограничениями:<br />  - Manage: Add/Remove Unit -- только в начале миссии или при возникновении проблем с ботами, желательно делать это находясь вне зоны соприкосновения с противником<br />  - Manage: Heal -- только вне боя<br />  - Manage: Renew kit -- только рядом с приданной техникой или в порту<br />  - Rally up -- только в пределах 100 метров (т.е. вытащить застрявшего в камнях бота находясь рядом, а не телепортнуть его на другой конец острова)<h4>VII. Респаун и ревайв:</h4>- Респауна нет<br />- Revive есть для всех игроков, требует First Aid Kit/Medkit<br />- В состоянии критического ранения могут добить",
@@ -22,8 +24,8 @@ var MissionsInfo = [
         "player_count": 18,
         "terrain": "Kunduz",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "Спецназ Чешской армии проводит операцию по поиску и уничтожению схронов оружтя",
         "overview_img": "imgs/BLITZ18_Dusk_Party_1C.Kunduz.jpg",
@@ -76,8 +78,8 @@ var MissionsInfo = [
         "player_count": 10,
         "terrain": "brf_sumava",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "PMC Special Assault Group assaults insurgents held radio station",
         "overview_img": "imgs/CO10_Falling_Orel.brf_sumava.jpg",
@@ -111,8 +113,8 @@ var MissionsInfo = [
         "player_count": 10,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "SPECOPS",
-            "RolePlay"
+            "RolePlay",
+            "SPECOPS"
         ],
         "overview": "CDF Operatives infilitrated enemy-held town in order to eliminate HVT and rescue MVP",
         "overview_img": "imgs/CO10_Happy_Hour.cup_chernarus_A3.jpg",
@@ -283,8 +285,8 @@ var MissionsInfo = [
         "player_count": 10,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "Czech mechanized assault on enemy strongpoints",
         "overview_img": "imgs/CO10_Treelines.cup_chernarus_A3.jpg",
@@ -301,8 +303,8 @@ var MissionsInfo = [
         "player_count": 10,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "Czech mechanized assault on enemy strongpoints",
         "overview_img": "imgs/CO10_Treelines_A2.cup_chernarus_A3.jpg",
@@ -354,8 +356,8 @@ var MissionsInfo = [
         "player_count": 12,
         "terrain": "tem_kujari",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "Shmel' group travels in Africa",
         "overview_img": "imgs/CO12_Hot_Trip_1A.tem_kujari.jpg",
@@ -372,8 +374,8 @@ var MissionsInfo = [
         "player_count": 12,
         "terrain": "Kunduz",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
+            "SPECOPS",
             "RolePlay"
         ],
         "overview": "Spetsnaz saving VIP",
@@ -559,9 +561,9 @@ var MissionsInfo = [
         "player_count": 15,
         "terrain": "utes",
         "tags": [
+            "EXOTIC GEAR",
             "SPECOPS",
-            "WEST GEAR",
-            "EXOTIC GEAR"
+            "WEST GEAR"
         ],
         "overview": "A team of US Seal's went to the SOS signal from underwater base",
         "overview_img": "imgs/CO15_Darker_than_dark_1A.utes.jpg",
@@ -661,8 +663,8 @@ var MissionsInfo = [
         "player_count": 16,
         "terrain": "ruha",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "Russian special forces platoon destroys enemy along the road in rural Finland",
         "overview_img": "imgs/CO16_Along_the_Track_1A.ruha.jpg",
@@ -729,8 +731,8 @@ var MissionsInfo = [
         "terrain": "Woodland_ACR",
         "tags": [
             "INFANTRY",
-            "SPECOPS",
-            "ARMOR"
+            "ARMOR",
+            "SPECOPS"
         ],
         "overview": "Russian artillery recon seeks German FOB",
         "overview_img": "imgs/CO16_Ognivo.Woodland_ACR.jpg",
@@ -936,8 +938,8 @@ var MissionsInfo = [
         "player_count": 18,
         "terrain": "lingor3",
         "tags": [
-            "SPECOPS",
-            "RolePlay"
+            "RolePlay",
+            "SPECOPS"
         ],
         "overview": "Mercenaries land at Lingor and start civil war",
         "overview_img": "imgs/CO18_Coup_D'Etat_1A.lingor3.jpg",
@@ -1001,8 +1003,8 @@ var MissionsInfo = [
         "player_count": 18,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "Mercenaries destabilize the situation",
         "overview_img": "imgs/CO18_Desperate_Business_1B.cup_chernarus_A3.jpg",
@@ -1085,8 +1087,8 @@ var MissionsInfo = [
         "player_count": 18,
         "terrain": "chernarus",
         "tags": [
-            "SPECOPS",
-            "RolePlay"
+            "RolePlay",
+            "SPECOPS"
         ],
         "overview": "Chernarussian Police arrest local criminal Bardak",
         "overview_img": "imgs/CO18_Law_And_Order_1A.chernarus.jpg",
@@ -1280,8 +1282,8 @@ var MissionsInfo = [
         "player_count": 18,
         "terrain": "WL_Rosche",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "DDR forces and czechoslovakian paratroopers try to counterattack",
         "overview_img": "imgs/CO18_Red_Answer.WL_Rosche.jpg",
@@ -1617,8 +1619,8 @@ var MissionsInfo = [
         "player_count": 20,
         "terrain": "WL_Rosche",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "Italian platoon is trying to push out soviets",
         "overview_img": "imgs/CO20_Avanti.WL_Rosche.jpg",
@@ -1682,8 +1684,8 @@ var MissionsInfo = [
         "player_count": 20,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "COMB.ARMS",
-            "MOUT"
+            "MOUT",
+            "COMB.ARMS"
         ],
         "overview": "Sturmgrenadiers assaults defended town",
         "overview_img": "imgs/CO20_Flamberge.cup_chernarus_A3.jpg",
@@ -2147,8 +2149,8 @@ var MissionsInfo = [
         "player_count": 22,
         "terrain": "VTF_Korsac",
         "tags": [
-            "COMB.ARMS",
-            "MOUT"
+            "MOUT",
+            "COMB.ARMS"
         ],
         "overview": "Немецкие мотшутцены отбивают польско-татарское нашествие",
         "overview_img": "imgs/CO22_Achtung_Panzer_1B.VTF_Korsac.jpg",
@@ -2274,8 +2276,8 @@ var MissionsInfo = [
         "player_count": 22,
         "terrain": "tem_kujari",
         "tags": [
-            "COMB.ARMS",
-            "RolePlay"
+            "RolePlay",
+            "COMB.ARMS"
         ],
         "overview": "USMC Platoon tries to recover damaged LAV-25",
         "overview_img": "imgs/CO22_Floor_is_LAVa.tem_kujari.jpg",
@@ -2670,8 +2672,8 @@ var MissionsInfo = [
         "player_count": 23,
         "terrain": "clafghan",
         "tags": [
-            "COMB.ARMS",
-            "JTAC/CAS"
+            "JTAC/CAS",
+            "COMB.ARMS"
         ],
         "overview": "Soviet platoon tries to break through valley",
         "overview_img": "imgs/CO23_Khazara_Valley_1A.clafghan.jpg",
@@ -2705,9 +2707,9 @@ var MissionsInfo = [
         "player_count": 23,
         "terrain": "chernarus",
         "tags": [
-            "COMB.ARMS",
+            "RolePlay",
             "ARMOR",
-            "RolePlay"
+            "COMB.ARMS"
         ],
         "overview": "Ukrainian mech infantry rescues belarussian tankman",
         "overview_img": "imgs/CO23_Na_Mezhi.chernarus.jpg",
@@ -2784,8 +2786,8 @@ var MissionsInfo = [
         "player_count": 23,
         "terrain": "Woodland_ACR",
         "tags": [
-            "COMB.ARMS",
-            "MOUT"
+            "MOUT",
+            "COMB.ARMS"
         ],
         "overview": "USMC and CDF take control of city",
         "overview_img": "imgs/CO23_Urban_March.Woodland_ACR.jpg",
@@ -2802,8 +2804,8 @@ var MissionsInfo = [
         "player_count": 23,
         "terrain": "Woodland_ACR",
         "tags": [
-            "COMB.ARMS",
-            "MOUT"
+            "MOUT",
+            "COMB.ARMS"
         ],
         "overview": "USMC and CDF take control of city",
         "overview_img": "imgs/CO23_Urban_March_1A.Woodland_ACR.jpg",
@@ -2821,9 +2823,9 @@ var MissionsInfo = [
         "terrain": "takistan",
         "tags": [
             "INFANTRY",
-            "COMB.ARMS",
+            "ARMOR",
             "JTAC/CAS",
-            "ARMOR"
+            "COMB.ARMS"
         ],
         "overview": "Афганистан 28 июля 1984 года.",
         "overview_img": "imgs/CO24_Afghan_Rage_1C.takistan.jpg",
@@ -3184,8 +3186,8 @@ var MissionsInfo = [
         "player_count": 25,
         "terrain": "Malden",
         "tags": [
-            "SPECOPS",
-            "RolePlay"
+            "RolePlay",
+            "SPECOPS"
         ],
         "overview": "USMC Special Purpose Task Force rescues personnel of downed helicopter",
         "overview_img": "imgs/CO25_Rush_To_Save.Malden.jpg",
@@ -3278,8 +3280,8 @@ var MissionsInfo = [
         "terrain": "tem_kujari",
         "tags": [
             "INFANTRY",
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "ВС Чада уничтожают банду Боко Харам",
         "overview_img": "imgs/CO26_Fin_de_la_patience.tem_kujari.jpg",
@@ -3373,10 +3375,10 @@ var MissionsInfo = [
         "player_count": 26,
         "terrain": "cup_chernarus_A3",
         "tags": [
+            "RolePlay",
             "SPECOPS",
             "MOUT",
-            "JTAC/CAS",
-            "RolePlay"
+            "JTAC/CAS"
         ],
         "overview": "Спецназ РФ по приказу Железного Димона ликвидирует Рамзана Кадырова",
         "overview_img": "imgs/CO26_Tikhiy_don.cup_chernarus_A3.jpg",
@@ -3426,8 +3428,8 @@ var MissionsInfo = [
         "player_count": 27,
         "terrain": "brf_sumava",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
+            "SPECOPS",
             "MOUT"
         ],
         "overview": "",
@@ -3962,10 +3964,10 @@ var MissionsInfo = [
         "player_count": 28,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
-            "JTAC/CAS",
-            "RolePlay"
+            "SPECOPS",
+            "RolePlay",
+            "JTAC/CAS"
         ],
         "overview": "German Zug assaults remnant elements of retreating insurgents platoon",
         "overview_img": "imgs/CO28_Meat_Bor_1A.cup_chernarus_A3.jpg",
@@ -4153,8 +4155,8 @@ var MissionsInfo = [
         "player_count": 29,
         "terrain": "Shapur_BAF",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "German Special Forces EGB commence raid on syrian FARP",
         "overview_img": "imgs/CO29_Black_Gold_2A.Shapur_BAF.jpg",
@@ -4201,8 +4203,8 @@ var MissionsInfo = [
         "player_count": 29,
         "terrain": "Kunduz",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "US special forces destroy air defense insurgents",
         "overview_img": "imgs/CO29_Hot_sand_1C.Kunduz.jpg",
@@ -4416,8 +4418,8 @@ var MissionsInfo = [
         "player_count": 31,
         "terrain": "WL_Rosche",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "US Combined Force operation to break russian defences on intersection. ",
         "overview_img": "imgs/CO29_Road_Hopping_1A.WL_Rosche.jpg",
@@ -4531,8 +4533,8 @@ var MissionsInfo = [
         "player_count": 30,
         "terrain": "WL_Rosche",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
+            "SPECOPS",
             "MOUT"
         ],
         "overview": "FJB-40 attacks town",
@@ -4614,8 +4616,8 @@ var MissionsInfo = [
         "player_count": 30,
         "terrain": "cup_chernarus_A3",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "Czech mechanized assault on enemy strongpoints",
         "overview_img": "imgs/CO30_Treelines_B1.cup_chernarus_A3.jpg",
@@ -4664,8 +4666,8 @@ var MissionsInfo = [
         "player_count": 31,
         "terrain": "Woodland_ACR",
         "tags": [
-            "SPECOPS",
-            "INFANTRY"
+            "INFANTRY",
+            "SPECOPS"
         ],
         "overview": "Спецназ армии США захватывает лидера повстанцев",
         "overview_img": "imgs/CO31-Ghost-Recon-Iron-Dragon-2B.Woodland_ACR.jpg",
@@ -4836,8 +4838,8 @@ var MissionsInfo = [
         "player_count": 33,
         "terrain": "ruha",
         "tags": [
-            "COMB.ARMS",
-            "ARMOR"
+            "ARMOR",
+            "COMB.ARMS"
         ],
         "overview": "Norwegian forces attack Russian positions.",
         "overview_img": "imgs/CO33_Intet_Ntt_1A.ruha.jpg",
@@ -4931,8 +4933,8 @@ var MissionsInfo = [
         "player_count": 34,
         "terrain": "brf_sumava",
         "tags": [
-            "MOUT",
-            "SPECOPS"
+            "SPECOPS",
+            "MOUT"
         ],
         "overview": "Ukrainian SSO attacks German positions",
         "overview_img": "imgs/CO34_Khirurgiya.brf_sumava.jpg",
@@ -4949,8 +4951,8 @@ var MissionsInfo = [
         "player_count": 35,
         "terrain": "VTF_Korsac",
         "tags": [
-            "MOUT",
-            "SPECOPS"
+            "SPECOPS",
+            "MOUT"
         ],
         "overview": "Ukrainians try to get more German POWs for a change",
         "overview_img": "imgs/CO35_Kolyaduvannya.VTF_Korsac.jpg",
@@ -5057,18 +5059,13 @@ var MissionsInfo = [
         "player_count": 42,
         "terrain": "takistan",
         "tags": [
-            "SPECOPS",
-            "INFANTRY",
-            "COMB.ARMS",
-            "MOUT",
-            "ARMOR",
-            "SPECOPS",
-            "INFANTRY",
-            "COMB.ARMS",
-            "MOUT",
             "JTAC/CAS",
             "ARMOR",
-            "RolePlay"
+            "SPECOPS",
+            "RolePlay",
+            "COMB.ARMS",
+            "INFANTRY",
+            "MOUT"
         ],
         "overview": "Афганистан 28 июля 1983 года.",
         "overview_img": "imgs/default_overview.jpg",
@@ -5085,8 +5082,8 @@ var MissionsInfo = [
         "player_count": 45,
         "terrain": "eden",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
+            "SPECOPS",
             "RolePlay"
         ],
         "overview": "Polish partizans retakes town from Bundeswehr",
@@ -5169,9 +5166,9 @@ var MissionsInfo = [
         "player_count": 30,
         "terrain": "I44_Omaha_V2",
         "tags": [
-            "COMB.ARMS",
+            "RolePlay",
             "ARMOR",
-            "RolePlay"
+            "COMB.ARMS"
         ],
         "overview": "US Platoon break through German defences after  D-Day",
         "overview_img": "imgs/default_overview.jpg",
@@ -5263,8 +5260,8 @@ var MissionsInfo = [
         "player_count": 23,
         "terrain": "chernarus_summer",
         "tags": [
-            "SPECOPS",
             "INFANTRY",
+            "SPECOPS",
             "MOUT",
             "RolePlay"
         ],

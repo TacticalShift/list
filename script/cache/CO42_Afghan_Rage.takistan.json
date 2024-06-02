@@ -6,18 +6,13 @@
     "player_count": 42,
     "terrain": "takistan",
     "tags": [
-        "SPECOPS",
-        "INFANTRY",
-        "COMB.ARMS",
-        "MOUT",
-        "ARMOR",
-        "SPECOPS",
-        "INFANTRY",
-        "COMB.ARMS",
-        "MOUT",
         "JTAC/CAS",
         "ARMOR",
-        "RolePlay"
+        "SPECOPS",
+        "RolePlay",
+        "COMB.ARMS",
+        "INFANTRY",
+        "MOUT"
     ],
     "overview": "Афганистан 28 июля 1983 года.",
     "overview_img": "imgs/default_overview.jpg",

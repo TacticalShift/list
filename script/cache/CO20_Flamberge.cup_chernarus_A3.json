@@ -6,8 +6,8 @@
     "player_count": 20,
     "terrain": "cup_chernarus_A3",
     "tags": [
-        "COMB.ARMS",
-        "MOUT"
+        "MOUT",
+        "COMB.ARMS"
     ],
     "overview": "Sturmgrenadiers assaults defended town",
     "overview_img": "imgs/CO20_Flamberge.cup_chernarus_A3.jpg",

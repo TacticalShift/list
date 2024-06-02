@@ -6,10 +6,10 @@
     "player_count": 28,
     "terrain": "cup_chernarus_A3",
     "tags": [
-        "SPECOPS",
         "INFANTRY",
-        "JTAC/CAS",
-        "RolePlay"
+        "SPECOPS",
+        "RolePlay",
+        "JTAC/CAS"
     ],
     "overview": "German Zug assaults remnant elements of retreating insurgents platoon",
     "overview_img": "imgs/CO28_Meat_Bor_1A.cup_chernarus_A3.jpg",

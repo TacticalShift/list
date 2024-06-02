@@ -7,8 +7,8 @@
     "terrain": "Woodland_ACR",
     "tags": [
         "INFANTRY",
-        "SPECOPS",
-        "ARMOR"
+        "ARMOR",
+        "SPECOPS"
     ],
     "overview": "Russian artillery recon seeks German FOB",
     "overview_img": "imgs/CO16_Ognivo.Woodland_ACR.jpg",

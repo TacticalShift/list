@@ -6,8 +6,8 @@
     "player_count": 10,
     "terrain": "cup_chernarus_A3",
     "tags": [
-        "COMB.ARMS",
-        "ARMOR"
+        "ARMOR",
+        "COMB.ARMS"
     ],
     "overview": "Czech mechanized assault on enemy strongpoints",
     "overview_img": "imgs/CO10_Treelines.cup_chernarus_A3.jpg",

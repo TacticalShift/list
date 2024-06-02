@@ -163,6 +163,7 @@ def parse_new_missions(src_dir, cache_dir,
 
     def unpack_mission(src_dir, cache_dir, unpbo_app):
         raw_mission_file = os.path.join(src_dir, f"{f}.{RAW_FILE_EXTENSION}")
+        cache_dir = os.path.abspath(cache_dir)
         subprocess.run([
             unpbo_app[0], unpbo_app[1], unpbo_app[2],
             raw_mission_file,
@@ -241,12 +242,12 @@ def parse_new_missions(src_dir, cache_dir,
         year = ''
         month = ''
         day = ''
-        
+
         mission_data['creation_date'] = strftime(
-            '%Y-%m-%d', 
+            '%Y-%m-%d',
             localtime(os.path.getmtime(path_to_missionsqm))
         )
-        
+
         with open(path_to_missionsqm, 'r', encoding='utf-8') as sqm:
             scenario_data_found = False
             for line in sqm.readlines():
@@ -325,6 +326,10 @@ def parse_new_missions(src_dir, cache_dir,
                         if not tag:
                             continue
                         mission_data['tags'].append(tag.strip('"'))
+
+                    # Clear duplicates
+                    mission_data['tags'] = list(set(mission_data['tags']))
+
                     continue
 
                 if line.startswith(BRIEFING_FILE_DATA['topic_start']):
@@ -396,10 +401,19 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
     print(f"Read and compose {STATS['total']} missions")
     for filename in cached_files:
         # print(f"Reading file: {filename}")
-        filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
-        with open(filename, 'r', encoding='utf-8') as cached_file:
+        cached_filename = os.path.join(cache_dir, f'{filename}.{CACHED_FILE_EXTENSION}')
+        patch_filename = os.path.join(PATHS['patch_dir'], f'{filename}.{CACHED_FILE_EXTENSION}')
+
+        file_content = {}
+        with open(cached_filename, 'r', encoding='utf-8') as cached_file:
             file_content = json.load(cached_file)
-            totals.append(file_content)
+
+        # Merge patch
+        if os.path.exists(patch_filename):
+            with open(patch_filename, 'r', encoding='utf-8') as patch_file:
+                file_content.update(json.load(patch_file))
+
+        totals.append(file_content)
 
     # Delete output dir content
     img_dir = os.path.join(output_dir, OVERVIEW_IMAGE_DIR)
@@ -438,6 +452,10 @@ def main():
         settings['UnpboApp'].get('unpbo_args2', ''),
         settings['UnpboApp'].get('unpbo_args3', '')
     )
+
+    PATHS['cache_dir'] = settings['General']['cache_dir']
+    PATHS['patch_dir'] = settings['General']['patch_dir']
+    PATHS['output_dir'] = settings['General']['output_dir']
     PATHS['default_content'] = os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE)
 
     if not check_dirs_exists(
