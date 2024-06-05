@@ -296,8 +296,11 @@ var GridViewClass = function () {
 
 			$(this.$grid).append(`<tr class="grid-line btn-see-more" mission-id="${info.id}">`
 				+ `<td class='td-main-info'>`
-				+ `  <div class='td-main-info-name'><img loading='lazy' src='${info.overview_img}'/>${title}</div>`
-				+ `  <div class='td-main-info-desc'>${info.overview}</div>`
+				+ `  <img loading='lazy' src='${info.overview_img}'/>`
+				+ `  <div class='td-main-info-desc'>
+				          <h3>${title}</h3>
+						  <p>${info.overview}</p>
+				   </div>`
 				+ `</td>`
 				+ `<td class="td-tags td-center">${tags}</td>`
 				+ `<td class="td-center">${info.player_count}</td>`
