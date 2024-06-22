@@ -6,9 +6,12 @@ var TagsMarkdown = {
 	"JTAC/CAS": { 		bg: "#6aa29e", text: "whitesmoke", "tooltip": "Операция с привлечением штурмовой авиации" },
 	"ARMOR": { 			bg: "#6e8fa6", text: "whitesmoke", "tooltip": "Операция с привлечением тяжелой техники (танки, БМП)" },
 	"AIRBORNE": {		bg: "#2a6c98", text: "whitesmoke", "tooltip": "Операция с привлечением транспортной авиации (десант)" },
-	"MOUT": { 			bg: "#aaaaaa", text: "#ffffff", "tooltip": "Операция в городской среде" },
+	"MOUT": { 			bg: "#aaaaaa", text: "#ffffff",    "tooltip": "Операция в городской среде" },
 	"RolePlay":  { 		bg: "#59ae42", text: "whitesmoke", "tooltip": "Миссия с ролевым элементом" },
-	"FIX NEEDED": {		bg: "#dddd11", text: "#333333", "tooltip": "Сломано! Пишите в СпортЛото!" },
+	"EAST GEAR":  { 	bg: "#7d2e2e", text: "whitesmoke", "tooltip": "Снаряжение восточного блока (ОВД, РФ)" },
+	"WEST GEAR": {      bg: "#1c358b", text: "whitesmoke", "tooltip": "Снаряжение западного блока (NATO и т.п.)" },
+	"EXOTIC GEAR": {    bg: "#59ae42", text: "whitesmoke", "tooltip": "Специфическое снаряжение (60-е, 70-е)" },
+	"FIX NEEDED": {		bg: "#dddd11", text: "#333333",    "tooltip": "Сломано! Пишите в СпортЛото!" },
 	"default": { 		bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
 };
 
