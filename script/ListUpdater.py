@@ -63,6 +63,11 @@ BRIEFING_FILE_DATA = {
 BRIEFING_FILE_EXCLUDE_TOPICS = ('VII. Замечания для GSO:',)
 
 
+def compose_filepath(path, filename, extension):
+    """Joins given path and filename"""
+    filename = f"{filename}.{extension}"
+    return os.path.join(*path, filename)
+
 
 def read_settings():
     """Reads settings file and return dict of values"""
@@ -119,11 +124,17 @@ def get_new_missions(cache_dir, src_dir):
     def invalidate_cached_file(cache_dir, filename):
         """Deletes file and related image from cache"""
         print(f"INVALIDATING CACHE FOR FILE {filename}")
-        img_filename = os.path.join(cache_dir, OVERVIEW_IMAGE_DIR, filename, IMAGE_FILE_EXTENSION)
+        img_filename = compose_filepath(
+            (cache_dir, OVERVIEW_IMAGE_DIR),
+            filename, IMAGE_FILE_EXTENSION
+        )
         if os.path.exists(img_filename):
             os.remove(img_filename)
 
-        filename = os.path.join(cache_dir, filename, CACHED_FILE_EXTENSION)
+        filename = compose_filepath(
+            (cache_dir, ),
+            filename, CACHED_FILE_EXTENSION
+        )
         os.remove(filename)
 
 
