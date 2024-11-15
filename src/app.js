@@ -26,7 +26,7 @@ var TagsMarkdown = {
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
-
+const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -291,6 +291,22 @@ var GridViewClass = function () {
 	this.header_columns = ["title","tags","player_count","terrain"];
 	this.controller = null;
 
+	this.$grid_item_mission = `<tr class="grid-line btn-see-more" mission-id="$id">`
+								+ `<td class='td-main-info'>`
+								+ `  <img loading='lazy' src='$overview_img'/>`
+								+ `  <div class='td-main-info-desc'>
+								          <h3>$title</h3>
+										  <p>$overview</p>
+										  <p>Игралась $played_times раз | Крайний: $last_played_date</p>
+								   </div>`
+								+ `</td>`
+								+ `<td class="td-tags td-center">$tags</td>`
+								+ `<td class="td-center">$player_count</td>`
+								+ `<td class='td-center' filter-type='terrain'>`
+								+ `  <div class='terrain clickable'>$terrain</div>`
+								+ `</td>`
+							+ "</tr>"
+
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
@@ -307,20 +323,18 @@ var GridViewClass = function () {
 			const tags = this.tags_compileTagsHTML(info.tags, true);
 			const title = (info.title == "null") ? info.filename : info.title;
 
-			$(this.$grid).append(`<tr class="grid-line btn-see-more" mission-id="${info.id}">`
-				+ `<td class='td-main-info'>`
-				+ `  <img loading='lazy' src='${info.overview_img}'/>`
-				+ `  <div class='td-main-info-desc'>
-				          <h3>${title}</h3>
-						  <p>${info.overview}</p>
-				   </div>`
-				+ `</td>`
-				+ `<td class="td-tags td-center">${tags}</td>`
-				+ `<td class="td-center">${info.player_count}</td>`
-				+ `<td class='td-center' filter-type='terrain'>`
-				+ `  <div class='terrain clickable'>${info.terrain}</div>`
-				+ `</td>`
-			+ "</tr>");
+			$(this.$grid).append(
+				this.$grid_item_mission
+					.replace("$id", info.id)
+					.replace("$overview_img", info.overview_img)
+					.repalce("$title", title)
+					.repalce("$overview", info.overview)
+					.repalce("$played_times", info.played_count)
+					.repalce("$last_played_dat", info.last_played_date.toLocaleDateString('ru-RU'))
+					.repalce("$tags", tags)
+					.repalce("$player_count", info.player_count)
+					.repalce("$terrain", info.terrains)
+			);
 
 			++gridSize;
 		}
@@ -785,7 +799,63 @@ var GridControllerClass = function () {
 }
 
 
-$( document ).ready(function () {
+class AARMissionStat {
+	constructor(date) {
+		this.date = date;
+		this.links = [];
+		this.timesPlayed = 0;
+	}
+}
+
+class AARLink {
+	constructor(link, date) {
+		this.link = link;
+		this.date = date;
+	}
+}
+
+async function getAARData (url) {
+	const response = await fetch('/aar/aarListConfig.ini');
+	if (!response.ok) console.err("Ошибка HTTP: " + response.status);
+
+	let text = await response.text();
+	aars = this.convertAarData(JSON.parse(text.replace('aarConfig = ', '')))
+	console.log(data)
+
+	const missionToAARMap = {}
+	aars.forEach((item, idx) => {
+		const name = item.link.split(".")[3];
+		const date = new Date(item.date);
+
+		if (!missionToAARMap.hasOwnProperty(name)) {
+			missionToAARMap[name] = new AARMissionStat(new Date(item.date))
+		}
+		const stat = missionToAARMap[name]
+
+		stat.count += 1;
+		stat.date = stat.date < date ? date : stat.date;
+		stat.links.push(new AARLink(item.link, date));
+	})
+
+	return missionToAARMap
+}
+
+function enrichMissionInfo(aarData) {
+	reverse = (x) => x.split("").reverse().join("");
+
+	const aarData = getAARData(AAR_CONFIG_URL);
+	MissionsInfo.forEach((item) => {
+		const filename = reverse(reverse(item.filename).split(".", 1)[1]);
+	    if (!aarData.hasOwnProperty(filename)) return
+		const aar = aarData[filename];
+		item.played_count = aar.timesPlayed;
+		item.last_played_date = aar.date;
+		item.aars = aar.links;
+	})
+}
+
+
+$( document ).ready(async function () {
 	console.log("KEK Ready");
 	$("#header-btn-up").hide()
 	$('#wrapper').on("scroll", (e)=>{
@@ -797,6 +867,8 @@ $( document ).ready(function () {
 		}
 	})
 
+	enrichMissionInfo();
+	
 	GridApp = {};
 	GridApp.model = new GridModelClass(MissionsInfo);
 	GridApp.view = new GridViewClass();
@@ -816,6 +888,4 @@ $( document ).ready(function () {
 	} else {
 		GridApp.controller.setUpFilterFromURL();
 	}
-
-
 })
