@@ -26,7 +26,7 @@ var TagsMarkdown = {
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
-const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini"
+const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -832,24 +832,13 @@ class AARLink {
 }
 
 const AAR_PREFIXES_TO_CORRECT = [
-	"T2_-_",
-	"T2-",
-	"T4_-_",
-	"[T2]_",
-	"m1-_",
-	"m1_-_",
-	"m2_-_",
-	"m3_-_",
-	"_",
-	"M1-_",
-	"M1_-_",
-	"M2_-_",
-	"NEWYEAR_"
+	"T2 - ", "[T2] ",
+	"T4 - ",
+	"M1 - ", "M2 - ", "M3 - ",
+	"m1 - ", "m2 - ", "m3 - ",
+	"NEWYEAR "
 ]
-const AAR_LINK_PATTERNS = [
-	/aars\/AAR\.\d+-\d+-\d+\./,
-	/aars\/AAR\./
-]
+
 
 function init() {
 	fetch(AAR_CONFIG_URL).then((response)=>{
@@ -865,15 +854,11 @@ function init() {
 		const missionToAARMap = {};
 		aars.forEach((item) => {
 			const date = new Date(item.date);
-			let name = item.link.replace(AAR_LINK_PATTERNS[0], "")
-				.replace(AAR_LINK_PATTERNS[1], "")
-				.replace(".zip","")
-				.split(".").slice(1).join(".");
-
+			let name = item.title	
 			for (let prefix of AAR_PREFIXES_TO_CORRECT) {
 				if (name.indexOf(prefix) != 0) continue;
 				name = name.replace(prefix, "")
-			}			
+			}	
 
 			if (!missionToAARMap.hasOwnProperty(name)) {
 				missionToAARMap[name] = new AARMissionStat(new Date(item.date))
@@ -884,23 +869,18 @@ function init() {
 			stat.last_played_date = stat.last_played_date < date ? date : stat.last_played_date;
 			stat.links.push(new AARLink(item.link, date));
 		})
-
 		return missionToAARMap
 	}).then((aarMap) => {
 		MissionsInfo.forEach((item) => {
-			const filename = item.filename
-				.split("").reverse().join("")
-				.split(".").slice(1).join(".")
-				.split("").reverse().join("");
-
-			if (!aarMap.hasOwnProperty(filename)) {
+			const name = item.title
+			if (!aarMap.hasOwnProperty(name)) {
 				item.played_times = 0;
 				item.last_played_date = null;
 				item.aars = [];
 				return;
 			}
 
-			const aar = aarMap[filename];
+			const aar = aarMap[name];
 			item.played_times = aar.timesPlayed;
 			item.last_played_date = aar.last_played_date;
 			item.aars = aar.links;
