@@ -26,7 +26,7 @@ var TagsMarkdown = {
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
-const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
+const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini"
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -294,11 +294,11 @@ var GridViewClass = function () {
 	this.$grid_item_mission = `<tr class="grid-line btn-see-more" mission-id="$id">`
 								+ `<td class='td-main-info'>`
 								+ `  <img loading='lazy' src='$overview_img'/>`
-								+ `  <div class='td-main-info-desc'>
-								          <h3>$title</h3>
-										  <p>$overview</p>
-										  <p>Игралась $played_times раз | Крайний: $last_played_date</p>
-								   </div>`
+								+ `  <div class='td-main-info-desc'>`
+								+      `<h3>$title</h3>`
+								+      `<p>$overview</p>`
+								+      "$played_times"
+								+ `  </div>`
 								+ `</td>`
 								+ `<td class="td-tags td-center">$tags</td>`
 								+ `<td class="td-center">$player_count</td>`
@@ -306,6 +306,7 @@ var GridViewClass = function () {
 								+ `  <div class='terrain clickable'>$terrain</div>`
 								+ `</td>`
 							+ "</tr>"
+	this.$played_times_info = "<p class='td-main-info-played'><b>Игралась</b> $played_times $played_times_word, крайний: $last_played_date</p>";
 
 	this.refreshGrid = function(model) {
 		this.clearGrid();
@@ -323,17 +324,27 @@ var GridViewClass = function () {
 			const tags = this.tags_compileTagsHTML(info.tags, true);
 			const title = (info.title == "null") ? info.filename : info.title;
 
+			played_times_info = ""
+			if (info.played_times > 0) {
+				let timesWord = getRightForm(info.played_times);
+				played_times_info = this.$played_times_info
+					.replace("$played_times", info.played_times)
+					.replace("$played_times_word", timesWord)
+					.replace("$last_played_date", info.last_played_date.toLocaleDateString(
+						"ru-RU", { month: 'long', day:"numeric", year: "numeric" }
+					));
+			}
+
 			$(this.$grid).append(
 				this.$grid_item_mission
 					.replace("$id", info.id)
 					.replace("$overview_img", info.overview_img)
-					.repalce("$title", title)
-					.repalce("$overview", info.overview)
-					.repalce("$played_times", info.played_count)
-					.repalce("$last_played_dat", info.last_played_date.toLocaleDateString('ru-RU'))
-					.repalce("$tags", tags)
-					.repalce("$player_count", info.player_count)
-					.repalce("$terrain", info.terrains)
+					.replace("$title", title)
+					.replace("$overview", info.overview)
+					.replace("$played_times", played_times_info)
+					.replace("$tags", tags)
+					.replace("$player_count", info.player_count)
+					.replace("$terrain", info.terrain)
 			);
 
 			++gridSize;
@@ -415,9 +426,15 @@ var GridViewClass = function () {
 			`на <span>${data.terrain}</span>` +
 			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
 			` | до ${data.player_count} игроков` +
-			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`)
+			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`) 
+
 		);
-		$(`${this.$popup} span[class='modal-guid']`).text(`[GUID:${data.id}][Filename:${data.filename}][Created:${data.creation_date}]`);
+		$(`${this.$popup} span[class='modal-guid']`).text(
+			`[GUID:${data.id}]` +
+			`[Filename:${data.filename}]` +
+			`[Created:${data.creation_date}]` +
+			(data.played_times > 0 ? `[Played:${data.last_played_date.toISOString().split('T')[0]}]` : "")
+		);
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
@@ -801,7 +818,7 @@ var GridControllerClass = function () {
 
 class AARMissionStat {
 	constructor(date) {
-		this.date = date;
+		this.last_played_date = date;
 		this.links = [];
 		this.timesPlayed = 0;
 	}
@@ -814,62 +831,86 @@ class AARLink {
 	}
 }
 
-async function getAARData (url) {
-	const response = await fetch('/aar/aarListConfig.ini');
-	if (!response.ok) console.err("Ошибка HTTP: " + response.status);
+const AAR_PREFIXES_TO_CORRECT = [
+	"T2_-_",
+	"T2-",
+	"T4_-_",
+	"[T2]_",
+	"m1-_",
+	"m1_-_",
+	"m2_-_",
+	"m3_-_",
+	"_",
+	"M1-_",
+	"M1_-_",
+	"M2_-_",
+	"NEWYEAR_"
+]
+const AAR_LINK_PATTERNS = [
+	/aars\/AAR\.\d+-\d+-\d+\./,
+	/aars\/AAR\./
+]
 
-	let text = await response.text();
-	aars = this.convertAarData(JSON.parse(text.replace('aarConfig = ', '')))
-	console.log(data)
-
-	const missionToAARMap = {}
-	aars.forEach((item, idx) => {
-		const name = item.link.split(".")[3];
-		const date = new Date(item.date);
-
-		if (!missionToAARMap.hasOwnProperty(name)) {
-			missionToAARMap[name] = new AARMissionStat(new Date(item.date))
+function init() {
+	fetch(AAR_CONFIG_URL).then((response)=>{
+		if (!response.ok) {
+			console.err("Ошибка HTTP: " + response.status);
+			return null
 		}
-		const stat = missionToAARMap[name]
+		return response.text()
+	}).then((responseText) => {
+		responseText = responseText.substring(0, responseText.length - 2).replace('aarConfig = ', '');
+		const aars = JSON.parse(responseText);
 
-		stat.count += 1;
-		stat.date = stat.date < date ? date : stat.date;
-		stat.links.push(new AARLink(item.link, date));
+		const missionToAARMap = {};
+		aars.forEach((item) => {
+			const date = new Date(item.date);
+			let name = item.link.replace(AAR_LINK_PATTERNS[0], "")
+				.replace(AAR_LINK_PATTERNS[1], "")
+				.replace(".zip","")
+				.split(".").slice(1).join(".");
+
+			for (let prefix of AAR_PREFIXES_TO_CORRECT) {
+				if (name.indexOf(prefix) != 0) continue;
+				name = name.replace(prefix, "")
+			}			
+
+			if (!missionToAARMap.hasOwnProperty(name)) {
+				missionToAARMap[name] = new AARMissionStat(new Date(item.date))
+			}
+			const stat = missionToAARMap[name]
+
+			stat.timesPlayed += 1;
+			stat.last_played_date = stat.last_played_date < date ? date : stat.last_played_date;
+			stat.links.push(new AARLink(item.link, date));
+		})
+
+		return missionToAARMap
+	}).then((aarMap) => {
+		MissionsInfo.forEach((item) => {
+			const filename = item.filename
+				.split("").reverse().join("")
+				.split(".").slice(1).join(".")
+				.split("").reverse().join("");
+
+			if (!aarMap.hasOwnProperty(filename)) {
+				item.played_times = 0;
+				item.last_played_date = null;
+				item.aars = [];
+				return;
+			}
+
+			const aar = aarMap[filename];
+			item.played_times = aar.timesPlayed;
+			item.last_played_date = aar.last_played_date;
+			item.aars = aar.links;
+		})
+
+		initGridApp()
 	})
-
-	return missionToAARMap
 }
 
-function enrichMissionInfo(aarData) {
-	reverse = (x) => x.split("").reverse().join("");
-
-	const aarData = getAARData(AAR_CONFIG_URL);
-	MissionsInfo.forEach((item) => {
-		const filename = reverse(reverse(item.filename).split(".", 1)[1]);
-	    if (!aarData.hasOwnProperty(filename)) return
-		const aar = aarData[filename];
-		item.played_count = aar.timesPlayed;
-		item.last_played_date = aar.date;
-		item.aars = aar.links;
-	})
-}
-
-
-$( document ).ready(async function () {
-	console.log("KEK Ready");
-	$("#header-btn-up").hide()
-	$('#wrapper').on("scroll", (e)=>{
-		const scrollPos = document.querySelector("#wrapper").scrollTop
-		if (scrollPos < 200) {
-			$("#header-btn-up").hide()
-		} else {
-			$("#header-btn-up").show()
-		}
-	})
-
-	enrichMissionInfo();
-	
-	GridApp = {};
+function initGridApp() {
 	GridApp.model = new GridModelClass(MissionsInfo);
 	GridApp.view = new GridViewClass();
 	GridApp.controller = new GridControllerClass();
@@ -888,4 +929,30 @@ $( document ).ready(async function () {
 	} else {
 		GridApp.controller.setUpFilterFromURL();
 	}
+}
+
+function getRightForm(number, form1 = "раз", form2 = "раза", form3 = "раз") {
+	let n = Math.trunc(Math.abs(number)) % 100,
+	n1 = n % 10;
+
+	if (n > 4 && n < 21) return form3;
+	if (n1 === 1) return form1;
+	if (n1 > 1 && n1 < 5) return form2;
+	return form3;
+}
+
+$( document ).ready(function () {
+	console.log("KEK Ready");
+	$("#header-btn-up").hide()
+	$('#wrapper').on("scroll", (e)=>{
+		const scrollPos = document.querySelector("#wrapper").scrollTop
+		if (scrollPos < 200) {
+			$("#header-btn-up").hide()
+		} else {
+			$("#header-btn-up").show()
+		}
+	})
+
+	GridApp = {};
+	init();
 })
