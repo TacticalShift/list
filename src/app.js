@@ -1,18 +1,27 @@
 
 var TagsMarkdown = {
-	"SPECOPS": { 		bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
-	"INFANTRY": {		bg: "#ba2b2b", text: "whitesmoke", "tooltip": "Пехотная операция силами стрелковых или моторизированных подразделений" },
-	"COMB.ARMS": {		bg: "#596816", text: "whitesmoke", "tooltip": "Общевойсковая операция с участием разных родов войск" },
-	"JTAC/CAS": { 		bg: "#6aa29e", text: "whitesmoke", "tooltip": "Операция с привлечением штурмовой авиации" },
-	"ARMOR": { 			bg: "#6e8fa6", text: "whitesmoke", "tooltip": "Операция с привлечением тяжелой техники (танки, БМП)" },
-	"AIRBORNE": {		bg: "#2a6c98", text: "whitesmoke", "tooltip": "Операция с привлечением транспортной авиации (десант)" },
-	"MOUT": { 			bg: "#aaaaaa", text: "#ffffff",    "tooltip": "Операция в городской среде" },
-	"RolePlay":  { 		bg: "#59ae42", text: "whitesmoke", "tooltip": "Миссия с ролевым элементом" },
-	"EAST GEAR":  { 	bg: "#7d2e2e", text: "whitesmoke", "tooltip": "Снаряжение восточного блока (ОВД, РФ)" },
-	"WEST GEAR": {      bg: "#1c358b", text: "whitesmoke", "tooltip": "Снаряжение западного блока (NATO и т.п.)" },
-	"EXOTIC GEAR": {    bg: "#59ae42", text: "whitesmoke", "tooltip": "Специфическое снаряжение (60-е, 70-е)" },
-	"FIX NEEDED": {		bg: "#dddd11", text: "#333333",    "tooltip": "Сломано! Пишите в СпортЛото!" },
-	"default": { 		bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
+    "SPECOPS": {        bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
+    "INFANTRY": {       bg: "#ba2b2b", text: "whitesmoke", "tooltip": "Пехотная операция силами стрелковых или моторизированных подразделений" },
+    "COMB.ARMS": {      bg: "#596816", text: "whitesmoke", "tooltip": "Общевойсковая операция с участием разных родов войск" },
+    "JTAC/CAS": {       bg: "#6aa29e", text: "whitesmoke", "tooltip": "Операция с привлечением штурмовой авиации" },
+    "ARMOR": {          bg: "#6e8fa6", text: "whitesmoke", "tooltip": "Операция с привлечением тяжелой техники (танки, БМП)" },
+    "AIRBORNE": {       bg: "#2a6c98", text: "whitesmoke", "tooltip": "Операция с привлечением транспортной авиации (десант)" },
+    "MOUT": {           bg: "#aaaaaa", text: "#ffffff",    "tooltip": "Операция в городской среде" },
+    "RolePlay":  {      bg: "#59ae42", text: "whitesmoke", "tooltip": "Миссия с ролевым элементом" },
+    "EAST GEAR":  {     bg: "#7d2e2e", text: "whitesmoke", "tooltip": "Снаряжение восточного блока (ОВД, РФ)" },
+    "WEST GEAR": {      bg: "#1c358b", text: "whitesmoke", "tooltip": "Снаряжение западного блока (NATO и т.п.)" },
+    "EXOTIC GEAR": {    bg: "#59ae42", text: "whitesmoke", "tooltip": "Специфическое снаряжение (60-е, 70-е)" },    
+    "1950" : {          bg: "#4f593d", text: "whitesmoke", "tooltip": "Время действия: 1950-ые" },
+    "1960" : {          bg: "#304a04", text: "whitesmoke", "tooltip": "Время действия: 1960-ые" },
+    "1970" : {          bg: "#3d590d", text: "whitesmoke", "tooltip": "Время действия: 1970-ые" },
+    "1980" : {          bg: "#778a57", text: "whitesmoke", "tooltip": "Время действия: 1980-ые" },
+    "1990" : {          bg: "#59732e", text: "whitesmoke", "tooltip": "Время действия: 1990-ые" },
+    "2000" : {          bg: "#737d6a", text: "whitesmoke", "tooltip": "Время действия: 2000-ые" },
+    "2010" : {          bg: "#b5ad59", text: "whitesmoke", "tooltip": "Время действия: 2010-ые" },
+    "2020" : {          bg: "#829c6e", text: "whitesmoke", "tooltip": "Время действия: 2020-ые" },
+    "2030" : {          bg: "#4d6639", text: "whitesmoke", "tooltip": "Время действия: 2030-ые" }
+    "FIX NEEDED": {     bg: "#dddd11", text: "#333333",    "tooltip": "Сломано! Пишите в СпортЛото!" },
+    "default": {        bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
