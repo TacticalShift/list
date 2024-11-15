@@ -81,24 +81,15 @@ def read_settings():
     return settings
 
 
-def check_dirs_exists(src_dir, cache_dir, output_dir, defaults_dir):
+def check_dirs_exists(*dir_descriptor):
     """Checks working directories to exists"""
     result = True
-    if not os.path.exists(src_dir) or not os.path.isdir(src_dir):
-        result = False
-        print('Source directory %s not found!', src_dir)
-    if not os.path.exists(cache_dir) or not os.path.isdir(cache_dir):
-        result = False
-        print('Cache directory %s not found!', cache_dir)
-    if not os.path.exists(output_dir) or not os.path.isdir(output_dir):
-        result = False
-        print('Output directory %s not found!', output_dir)
-    if not os.path.exists(defaults_dir) or not os.path.isdir(defaults_dir):
-        result = False
-        print('Default content directory %s not found!', defaults_dir)
-
-
-    return result
+    for d,name in dir_descriptor:
+        if not os.path.exists(d) or not os.path.isdir(d):
+            result = False
+            print('%s directory %s not found!', name, d)
+    
+    return result 
 
 
 def list_filenames_in_dir(directory, extension, subdir=''):
@@ -469,29 +460,27 @@ def main():
     PATHS['output_dir'] = settings['General']['output_dir']
     PATHS['default_content'] = os.path.join(default_content_dir, DEFAULT_OVERVIEW_IMAGE)
 
-    if not check_dirs_exists(
-        src_dir, cache_dir, output_dir, default_content_dir
-    ):
-        return 2
-
     # Look for new missions and parse 'em
-    new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
+    if check_dirs_exists((src_dir, "Source")):
+        new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
 
-    parse_new_missions(
-        src_dir, cache_dir,
-        new_missions, unpbo_app
-    )
-    parse_new_missions(
-        src_dir, cache_dir,
-        new_broken_missions, unpbo_app, broken=True
-    )
+        parse_new_missions(
+            src_dir, cache_dir,
+            new_missions, unpbo_app
+        )
+        parse_new_missions(
+            src_dir, cache_dir,
+            new_broken_missions, unpbo_app, broken=True
+        )
+            
+        STATS['new'] = len(new_missions)
+        STATS['new_broken'] = len(new_broken_missions)
+        STATS['broken'] = len(os.listdir(os.path.join(cache_dir, BROKEN_MISSIONS_DIR)))
 
-    # Compose cached files into a new one
-    compose_mission_list(cache_dir, output_dir, default_content_dir)
+    if check_dirs_exists((cache_dir,"Cache"), (output_dir,"Output"), (default_content_dir,"Default content")):
+        # Compose cached files into a new one
+        compose_mission_list(cache_dir, output_dir, default_content_dir)
 
-    STATS['new'] = len(new_missions)
-    STATS['new_broken'] = len(new_broken_missions)
-    STATS['broken'] = len(os.listdir(os.path.join(cache_dir, BROKEN_MISSIONS_DIR)))
 
 
 if __name__ == "__main__":

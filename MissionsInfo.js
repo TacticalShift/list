@@ -2803,7 +2803,8 @@ var MissionsInfo = [
         "player_count": 22,
         "terrain": "tem_kujari",
         "tags": [
-            "INFANTRY"
+            "INFANTRY",
+            "1970"
         ],
         "overview": "French airborne operation in Zaire",
         "overview_img": "imgs/CO22_Leopard_Falling.tem_kujari.jpg",

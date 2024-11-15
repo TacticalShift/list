@@ -11,7 +11,7 @@ var TagsMarkdown = {
     "EAST GEAR":  {     bg: "#7d2e2e", text: "whitesmoke", "tooltip": "Снаряжение восточного блока (ОВД, РФ)" },
     "WEST GEAR": {      bg: "#1c358b", text: "whitesmoke", "tooltip": "Снаряжение западного блока (NATO и т.п.)" },
     "EXOTIC GEAR": {    bg: "#59ae42", text: "whitesmoke", "tooltip": "Специфическое снаряжение (60-е, 70-е)" },
-    "ARTILLERY": {      bg: "#428aae", text: "whitesmoke", "tooltip": hint: "Есть поддержка артиллерии (минометы и круче)" },
+    "ARTILLERY": {      bg: "#428aae", text: "whitesmoke", "tooltip": "Есть поддержка артиллерии (минометы и круче)" },
     "1950" : {          bg: "#4f593d", text: "whitesmoke", "tooltip": "Время действия: 1950-ые" },
     "1960" : {          bg: "#304a04", text: "whitesmoke", "tooltip": "Время действия: 1960-ые" },
     "1970" : {          bg: "#3d590d", text: "whitesmoke", "tooltip": "Время действия: 1970-ые" },
@@ -20,7 +20,7 @@ var TagsMarkdown = {
     "2000" : {          bg: "#737d6a", text: "whitesmoke", "tooltip": "Время действия: 2000-ые" },
     "2010" : {          bg: "#b5ad59", text: "whitesmoke", "tooltip": "Время действия: 2010-ые" },
     "2020" : {          bg: "#829c6e", text: "whitesmoke", "tooltip": "Время действия: 2020-ые" },
-    "2030" : {          bg: "#4d6639", text: "whitesmoke", "tooltip": "Время действия: 2030-ые" }
+    "2030" : {          bg: "#4d6639", text: "whitesmoke", "tooltip": "Время действия: 2030-ые" },
     "FIX NEEDED": {     bg: "#dddd11", text: "#333333",    "tooltip": "Сломано! Пишите в СпортЛото!" },
     "default": {        bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
 };
