@@ -1017,7 +1017,7 @@ function reduceMissions(missions) {
 
 		// -- Update existing
 		let reduced = reducedMap[name];		
-		if (new Date(reduced.creation_date) < new Date(m.creation_date)) {
+		if (new Date(reduced.creation_date) <= new Date(m.creation_date)) {
 			m.versions = ([version].concat(reduced.versions)).sort(orderByCreationDate)
 			m.reduced_name = name;
 
@@ -1025,6 +1025,7 @@ function reduceMissions(missions) {
 			reduced = m;
 			continue;
 		}
+
 		
 		// -- Append version
 		reduced.versions.push(version);
