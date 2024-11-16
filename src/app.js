@@ -28,7 +28,7 @@ var TagsMarkdown = {
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
-const AAR_CONFIG_URL = "http://tacticalshift.ru/aar/aarListConfig.ini"
+const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
 
 var GridModelClass = function (data) {
 	this.data = [...data];
