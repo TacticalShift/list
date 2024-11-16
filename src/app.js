@@ -1,5 +1,5 @@
 // TODO:
-// -- Add filter: checkbox 'Not played in last 30 days"
+// -- Find a way to compose missions data with similar title, but different filenames or title with some prefixes?
 
 
 var TagsMarkdown = {
@@ -57,6 +57,10 @@ var GridModelClass = function (data) {
 
 			return true;
 		}
+		, byUnplayedTime: function(v, vToFind) {
+			if (v === null) return true;
+			return (new Date - v) > vToFind;
+		}
 
 		, terrainValues: []
 		, tagsValues: []
@@ -66,6 +70,7 @@ var GridModelClass = function (data) {
 			, slotsFrom: "byNumberGTE"
 			, slotsTo: "byNumberLTE"
 			, tags: "byTags"
+			, unplayed: "byUnplayedTime"
 		}
 		, field2scheme: {
 			title: "title"
@@ -73,6 +78,7 @@ var GridModelClass = function (data) {
 			, slotsFrom: "player_count"
 			, slotsTo: "player_count"
 			, tags: "tags"
+			, unplayed: "last_played_date"
 		},
 
 		currentFilter: {}
@@ -120,7 +126,6 @@ var GridModelClass = function (data) {
 
 		filterData = Object.entries(filterData);
 		if (filterData.length == 0) { // Exit on filter reset action
-			// TODO: Need to handle FIX NEEDED tag somehow?
 			this.refreshView();
 			return;
 		}
@@ -312,7 +317,6 @@ var GridViewClass = function () {
 	this.$played_times_info = "<p class='td-main-info-played'><b>Игралась</b> $played_times $played_times_word, крайний: $last_played_date</p>";
 
 
-
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
@@ -415,6 +419,7 @@ var GridViewClass = function () {
 	this.filter_resetFilter = function () {
 		// Clears filter inputs, uncheck all tags and mark them as inactive
 		$(`.td-filter-inputs input, .td-filter-inputs select`).each(function () { $(this).val("") });
+		$(`.td-filter-inputs input[type="checkbox"]`).each(function () { $(this).prop("checked", false) });
 		$(`.td-filter-inputs span`).each(function () {
 			$(this).find(`input[type='checkbox']`).prop("checked", false);
 			$(this).find(`label`).addClass("td-inactive-tag");
@@ -531,6 +536,7 @@ var GridControllerClass = function () {
 	this.$filter_byTerrain = "td[filter-type='terrain'] select";
 	this.$filter_bySlotsFrom = "td[filter-type='slots-gte'] input";
 	this.$filter_bySlotsTo = "td[filter-type='slots-lte'] input";
+	this.$filter_unplayed = "td[filter-type='unplayed'] input";
 
 	this.removeEvents = function () {
 		$(this.$btn_seeMore).off();
@@ -583,7 +589,6 @@ var GridControllerClass = function () {
 				let controller = event.data;
 				controller.executeFiltering();
 			});
-
 			$(this.$filter_tags).on("click", this, function (event) {
 				if (event.target.id == "") { return };
 
@@ -596,6 +601,10 @@ var GridControllerClass = function () {
 				};
 				controller.executeFiltering();
 			});
+			$(this.$filter_unplayed).on("click", this, function (event) {
+				let controller = event.data;
+				controller.executeFiltering();
+			})
 
 			$(this.$filter_doFilter).on("click", this, function (event) {
 				let controller = event.data;
@@ -681,24 +690,16 @@ var GridControllerClass = function () {
 	}
 
 	this.collectFilterParams = function () {
-		let byTitle = $(this.$filter_byTitle).val();
-		let byTerrain = $(this.$filter_byTerrain).val();
-		let bySlotsFrom = $(this.$filter_bySlotsFrom).val();
-		let bySlotsTo = $(this.$filter_bySlotsTo).val();
-		let byTags = this.collectFilterActiveTag();
-		/*
-		$(`.td-filter-inputs span`).each(function () {
-			let $tagFilter = $(this).find(`input[type='checkbox']`);
-			if ($tagFilter.prop("checked")) {
-				byTags.push($tagFilter.prop("id"));
-			}
-		});
-		*/
+		const byTitle = $(this.$filter_byTitle).val();
+		const byTerrain = $(this.$filter_byTerrain).val();
+		const bySlotsFrom = $(this.$filter_bySlotsFrom).val();
+		const bySlotsTo = $(this.$filter_bySlotsTo).val();
+		const byTags = this.collectFilterActiveTag();
+		const byUnplayed = $(this.$filter_unplayed).is(":checked") ? 90 * 24 * 60 * 60 * 1000 : 0;  // 90 days in milliseconds
 
 		let params = {};
-
 		// Reset filters if empty filter used
-		if (byTitle == "" && byTerrain == "" && bySlotsFrom == "" && bySlotsTo == "" && byTags.length == 0) {
+		if (byTitle == "" && byTerrain == "" && bySlotsFrom == "" && bySlotsTo == "" && byTags.length == 0 && byUnplayed == 0) {
 			return params;
 		}
 
@@ -707,6 +708,7 @@ var GridControllerClass = function () {
 		if (bySlotsFrom != "") { params["slotsFrom"] = parseInt(bySlotsFrom); };
 		if (bySlotsTo != "") { params["slotsTo"] = parseInt(bySlotsTo); };
 		if (byTags.length > 0) { params["tags"] = byTags; };
+		if (byUnplayed) { params["unplayed"] = byUnplayed;}
 
 		return params;
 	};
