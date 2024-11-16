@@ -302,6 +302,53 @@ td {
 	border-radius: 0px 32px 32px 32px;
 }
 
+/* Collapsible sections */
+/*  Убираем стандартный маркер (FF/Chrome) */
+.modal details summary::-webkit-details-marker {
+	display: none
+}
+.modal details > summary {
+	list-style: none;
+	cursor: pointer;
+	font-weight: 800;
+}
+
+.modal details summary:before {  /* closed marker */
+	content: '╋';
+	margin-right: 7px;
+	font-size: 18px;
+}
+  
+/* маркер для открытого состояния */
+.modal details[open] summary:before { /* opened marker */
+	content: '━';
+}
+
+.modal details a {
+	display: block;
+	text-decoration: none;
+	color: #c70e21;
+	padding-left: 45px;
+	padding-top: 5px;
+	padding-bottom: 3px;
+	border: 1px solid #00000000;
+}
+
+.modal details a:hover {
+	color: #ff021c;
+	background: #ff021c12;
+}
+
+.modal details a span {
+	display: inline-block;
+	min-width: 180px;
+}
+
+
+.modal-briefing {
+	padding-top: 10px;
+}
+
 /* The Close Button */
 .close {
 	color: #aaa;

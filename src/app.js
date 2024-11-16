@@ -1,3 +1,6 @@
+// TODO:
+// -- Add filter: checkbox 'Not played in last 30 days"
+
 
 var TagsMarkdown = {
     "SPECOPS": {        bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
@@ -308,6 +311,8 @@ var GridViewClass = function () {
 							+ "</tr>"
 	this.$played_times_info = "<p class='td-main-info-played'><b>Игралась</b> $played_times $played_times_word, крайний: $last_played_date</p>";
 
+
+
 	this.refreshGrid = function(model) {
 		this.clearGrid();
 		this.filter_prepareFilter(model.filter.terrainValues, model.filter.tagsValues);
@@ -331,7 +336,7 @@ var GridViewClass = function () {
 					.replace("$played_times", info.played_times)
 					.replace("$played_times_word", timesWord)
 					.replace("$last_played_date", info.last_played_date.toLocaleDateString(
-						"ru-RU", { month: 'long', day:"numeric", year: "numeric" }
+						"ru-RU", { month: 'long', day:"numeric", year: "numeric"}
 					));
 			}
 
@@ -420,8 +425,6 @@ var GridViewClass = function () {
 		let title = (data.title == "") ? data.filename : data.title;
 
 		$(`${this.$popup} h1`).text(title);
-
-
 		$(`${this.$popup} p[class='modal-terrain']`).html(
 			`на <span>${data.terrain}</span>` +
 			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
@@ -438,7 +441,34 @@ var GridViewClass = function () {
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
-		$(`${this.$popup} p[class='modal-briefing']`).html(data.briefing);
+
+		aarElements = data.aars.reduce((str, item) => {
+			const date = item.date.toLocaleDateString('ru-RU', { month: 'long', day:"numeric", year: "numeric"});
+			let dateDiff = Math.floor((new Date() - item.date) / 1000 / 60 / 60 / 24);
+			let ago = "";
+			if (dateDiff > 365) {
+				dateDiff = Math.floor(dateDiff / 365);
+				ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "год назад", form2 = "года назад", form3 = "лет назад")})`;
+			} else if (dateDiff > 30) {
+				dateDiff = Math.floor(dateDiff / 30);
+				ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "месяц назад", form2 = "месяца назад", form3 = "месяцев назад")})`;
+			} else if (dateDiff > 0) {
+			 	ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "день назад", form2 = "дня назад", form3 = "дней назад")})`;
+			}
+			return str + `<a href="${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
+		}, "");
+		$(`${this.$popup} .modal-aar-container`).html(
+			`<details>
+				<summary>After Action Reports (${data.played_times})</summary>
+				${aarElements}
+			</details>`
+		)
+		$(`${this.$popup} .modal-briefing`).html(
+			`<details>
+				<summary>Брифинг</summary>
+				${data.briefing}
+			</details>`			
+		);
 		$(this.$popup).css("display","block");
 		$(this.$popup).scrollTop(0);
 	}
