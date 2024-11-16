@@ -344,9 +344,36 @@ td {
 	min-width: 180px;
 }
 
+.modal-aar-container {
+	padding-top: 10px;
+}
 
 .modal-briefing {
 	padding-top: 10px;
+}
+
+.modal-versions-container {
+	padding-top: 10px;
+}
+
+.modal-versions-container details > div {
+	padding: 10px 45px;
+}
+.modal-versions-container details > div:hover {
+	background-color: #ddd;
+}
+
+.modal-versions-container details > div > span {
+	display: inline-block;
+}
+
+.modal-versions-container details .version-date {
+	width: 25%
+}
+.modal-versions-container details .version-filename {
+	display: block;
+	color: #777777;
+	font-size: 12px;
 }
 
 /* The Close Button */

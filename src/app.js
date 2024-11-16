@@ -1,5 +1,4 @@
 // TODO:
-// -- Find a way to compose missions data with similar title, but different filenames or title with some prefixes?
 
 
 var TagsMarkdown = {
@@ -29,7 +28,7 @@ var TagsMarkdown = {
 };
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
-const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
+const AAR_CONFIG_URL = "http://tacticalshift.ru/aar/aarListConfig.ini"
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -301,7 +300,7 @@ var GridViewClass = function () {
 
 	this.$grid_item_mission = `<tr class="grid-line btn-see-more" mission-id="$id">`
 								+ `<td class='td-main-info'>`
-								+ `  <img loading='lazy' src='$overview_img'/>`
+								+ `  <img loading='lazy' src="$overview_img"/>`
 								+ `  <div class='td-main-info-desc'>`
 								+      `<h3>$title</h3>`
 								+      `<p>$overview</p>`
@@ -314,7 +313,7 @@ var GridViewClass = function () {
 								+ `  <div class='terrain clickable'>$terrain</div>`
 								+ `</td>`
 							+ "</tr>"
-	this.$played_times_info = "<p class='td-main-info-played'><b>Игралась</b> $played_times $played_times_word, крайний: $last_played_date</p>";
+	this.$played_times_info = "<p class='td-main-info-played'><b>Игралась</b> $last_played_date, всего $played_times $played_times_word</p>";
 
 
 	this.refreshGrid = function(model) {
@@ -339,9 +338,7 @@ var GridViewClass = function () {
 				played_times_info = this.$played_times_info
 					.replace("$played_times", info.played_times)
 					.replace("$played_times_word", timesWord)
-					.replace("$last_played_date", info.last_played_date.toLocaleDateString(
-						"ru-RU", { month: 'long', day:"numeric", year: "numeric"}
-					));
+					.replace("$last_played_date", getPassedDaysText(info.last_played_date));
 			}
 
 			$(this.$grid).append(
@@ -445,21 +442,17 @@ var GridViewClass = function () {
 		);
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
-		$(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
+		// $(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
+		$(`${this.$popup} .modal-overview-container`).html(
+			`<details open>
+				<summary>Описание</summary>
+				${data.overview}
+			</details>`			
+		);
 
-		aarElements = data.aars.reduce((str, item) => {
+		const aarElements = data.aars.reduce((str, item) => {
 			const date = item.date.toLocaleDateString('ru-RU', { month: 'long', day:"numeric", year: "numeric"});
-			let dateDiff = Math.floor((new Date() - item.date) / 1000 / 60 / 60 / 24);
-			let ago = "";
-			if (dateDiff > 365) {
-				dateDiff = Math.floor(dateDiff / 365);
-				ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "год назад", form2 = "года назад", form3 = "лет назад")})`;
-			} else if (dateDiff > 30) {
-				dateDiff = Math.floor(dateDiff / 30);
-				ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "месяц назад", form2 = "месяца назад", form3 = "месяцев назад")})`;
-			} else if (dateDiff > 0) {
-			 	ago = `(${dateDiff} ${getRightForm(dateDiff, form1 = "день назад", form2 = "дня назад", form3 = "дней назад")})`;
-			}
+			const ago = getPassedDaysText(item.date)
 			return str + `<a href="${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
 		}, "");
 		$(`${this.$popup} .modal-aar-container`).html(
@@ -472,6 +465,23 @@ var GridViewClass = function () {
 			`<details>
 				<summary>Брифинг</summary>
 				${data.briefing}
+			</details>`			
+		);
+
+		const missionVersions = data.versions.reduce((str, item) => {
+			const date = item.creation_date.toISOString().split('T')[0]
+			return str + `<div>
+				<span class='version-date'>${date}</span>
+				<span>
+				<span class='version-title'>${item.title}</span>
+				<span class='version-filename'>${item.filename}</span>
+				</span>
+			</div>`
+		}, "");
+		$(`${this.$popup} .modal-versions-container`).html(
+			`<details>
+				<summary>Версии (${data.versions.length})</summary>
+				${missionVersions}
 			</details>`			
 		);
 		$(this.$popup).css("display","block");
@@ -863,11 +873,19 @@ class AARLink {
 	}
 }
 
+class MissionVersion {
+	constructor(title, filename, creation_date) {
+		this.title = title;
+		this.filename = filename;
+		this.creation_date = creation_date;
+	}
+}
+
 const AAR_PREFIXES_TO_CORRECT = [
-	"T2 - ", "[T2] ",
+	"T2 - ", "[T2] ", "T2-", "T2_-_",
 	"T4 - ",
-	"M1 - ", "M2 - ", "M3 - ",
-	"m1 - ", "m2 - ", "m3 - ",
+	"M0 - ", "M1 - ", "M2 - ", "M3 - ","M4 - ",
+	"m0 - ", "m1 - ", "m1- ", "m2 - ", "m3 - ","m4 - ",
 	"NEWYEAR "
 ]
 
@@ -886,37 +904,58 @@ function init() {
 		const missionToAARMap = {};
 		aars.forEach((item) => {
 			const date = new Date(item.date);
-			let name = item.title	
+			let name = item.title
+
+			// -- Remove trash prefixes in AAR config
 			for (let prefix of AAR_PREFIXES_TO_CORRECT) {
 				if (name.indexOf(prefix) != 0) continue;
 				name = name.replace(prefix, "")
-			}	
+			}
+
+			// -- Normalize to core mission title
+			name = normalizeMissionTitle(name)
 
 			if (!missionToAARMap.hasOwnProperty(name)) {
 				missionToAARMap[name] = new AARMissionStat(new Date(item.date))
 			}
 			const stat = missionToAARMap[name]
 
+			// -- Append stats, re-order links to be from latest to oldest
 			stat.timesPlayed += 1;
 			stat.last_played_date = stat.last_played_date < date ? date : stat.last_played_date;
 			stat.links.push(new AARLink(item.link, date));
+			stat.links = stat.links.sort((a,b) => {
+				if (a.date < b.date) return 1;
+				if (a.date > b.date) return -1;
+				return 0
+			});
 		})
 		return missionToAARMap
 	}).then((aarMap) => {
-		MissionsInfo.forEach((item) => {
-			const name = item.title
-			if (!aarMap.hasOwnProperty(name)) {
-				item.played_times = 0;
-				item.last_played_date = null;
-				item.aars = [];
-				return;
+		//aarMap = reduceAarMap(aarMap);
+		const missionMap = reduceMissions(MissionsInfo)
+
+		MissionsInfo = [];
+		for (let k in missionMap) {
+			const mission = missionMap[k];
+			const reduced_name = mission.reduced_name;
+
+			// --- Look for AARs with same reduced name
+			if (!aarMap.hasOwnProperty(reduced_name)) {
+				mission.last_played_date = null;
+				mission.played_times = 0;
+				mission.aars = [];
+				continue;
 			}
 
-			const aar = aarMap[name];
-			item.played_times = aar.timesPlayed;
-			item.last_played_date = aar.last_played_date;
-			item.aars = aar.links;
-		})
+			// -- Link AARs to mission
+			const aar = aarMap[reduced_name];
+			mission.last_played_date = aar.last_played_date;
+			mission.played_times = aar.timesPlayed;
+			mission.aars = aar.links;
+			
+			MissionsInfo.push(mission);
+		}
 
 		initGridApp()
 	})
@@ -943,7 +982,62 @@ function initGridApp() {
 	}
 }
 
+function normalizeMissionTitle(name) {
+	const rePrefix = /^(Co|co|CO|BLITZ|RP|JTF-CO|BA|C0|COTVT|CO |co_)(\d+)(\s|-|_)/
+	const reSuffix = /[\s_-]+(\d[a-zA-Zа-яА-Я]|[a-zA-Zа-яА-Я]\d|\(.*\))$/
+	return name.replace(rePrefix, "").replace(reSuffix, "").toLowerCase().trim();
+}
+
+function reduceMissions(missions) {
+	/**
+	 * Reduces list of missions by finding the latest mission (by creation date) with 
+	 * the same core title (w/o COXX prefix and version suffix). 
+	 * Adds similar missions to 'versions'.
+	 */
+	const reducedMap = {};
+
+	orderByCreationDate = (a,b) => {
+		// -- Reverse sort
+		if (a.creation_date < b.creation_date) return 1;
+		if (a.creation_date > b.creation_date) return -1;
+		return 0;
+	};
+
+	for (let m of missions) {
+		const name = normalizeMissionTitle(m.title);
+		const version = new MissionVersion(m.title, m.filename, new Date(m.creation_date));
+
+		// -- New entry
+		if (!reducedMap.hasOwnProperty(name)) {
+			m.versions = [version];
+			m.reduced_name = name;
+			reducedMap[name] = m;
+			continue;
+		}
+
+		// -- Update existing
+		let reduced = reducedMap[name];		
+		if (new Date(reduced.creation_date) < new Date(m.creation_date)) {
+			m.versions = ([version].concat(reduced.versions)).sort(orderByCreationDate)
+			m.reduced_name = name;
+
+			reducedMap[name] = m;
+			reduced = m;
+			continue;
+		}
+		
+		// -- Append version
+		reduced.versions.push(version);
+		reduced.versions = reduced.versions.sort(orderByCreationDate)
+	}
+
+	return reducedMap
+}
+
 function getRightForm(number, form1 = "раз", form2 = "раза", form3 = "раз") {
+	/**
+	 * Returns valid plural form depending on given number.
+	 */
 	let n = Math.trunc(Math.abs(number)) % 100,
 	n1 = n % 10;
 
@@ -951,6 +1045,26 @@ function getRightForm(number, form1 = "раз", form2 = "раза", form3 = "р�
 	if (n1 === 1) return form1;
 	if (n1 > 1 && n1 < 5) return form2;
 	return form3;
+}
+
+function getPassedDaysText(date) {
+	/**
+	 * Returns a 'string' with formatted text of passed time from given 'date' to today.
+	 * Text in format 'X дней/месяцев/лет'
+	 */
+	let dateDiff = Math.floor((new Date() - date) / 1000 / 60 / 60 / 24);  // from milliseconds
+	let text = "";
+	if (dateDiff > 365) {
+		dateDiff = Math.floor(dateDiff / 365);
+		text = `${dateDiff} ${getRightForm(dateDiff, form1 = "год назад", form2 = "года назад", form3 = "лет назад")}`;
+	} else if (dateDiff > 30) {
+		dateDiff = Math.floor(dateDiff / 30);
+		text = `${dateDiff} ${getRightForm(dateDiff, form1 = "месяц назад", form2 = "месяца назад", form3 = "месяцев назад")}`;
+	} else if (dateDiff > 0) {
+		text = `${dateDiff} ${getRightForm(dateDiff, form1 = "день назад", form2 = "дня назад", form3 = "дней назад")}`;
+	}
+
+	return text
 }
 
 $( document ).ready(function () {
