@@ -1,7 +1,7 @@
 // TODO:
 
 
-var TagsMarkdown = {
+const TagsMarkdown = {
     "SPECOPS": {        bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
     "INFANTRY": {       bg: "#ba2b2b", text: "whitesmoke", "tooltip": "Пехотная операция силами стрелковых или моторизированных подразделений" },
     "COMB.ARMS": {      bg: "#596816", text: "whitesmoke", "tooltip": "Общевойсковая операция с участием разных родов войск" },
@@ -26,6 +26,16 @@ var TagsMarkdown = {
     "FIX NEEDED": {     bg: "#dddd11", text: "#333333",    "tooltip": "Сломано! Пишите в СпортЛото!" },
     "default": {        bg: "#8374aa", text: "whitesmoke", "tooltip": "" }
 };
+
+const EXCLUDED_TERRAINS = [
+	"IslaDuala3",
+	"lythium",
+	"abramia",
+	"anim_helvantis_v2",
+	"clafgan",
+	"smd_sahrani_a3",
+	"vt5"
+];
 
 const FIX_NEEDED_TAG = "FIX NEEDED"
 const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
@@ -431,7 +441,7 @@ var GridViewClass = function () {
 			`на <span>${data.terrain}</span>` +
 			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
 			` | до ${data.player_count} игроков` +
-			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`) 
+			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`)
 
 		);
 		$(`${this.$popup} span[class='modal-guid']`).text(
@@ -447,13 +457,13 @@ var GridViewClass = function () {
 			`<details open>
 				<summary>Описание</summary>
 				${data.overview}
-			</details>`			
+			</details>`
 		);
 
 		const aarElements = data.aars.reduce((str, item) => {
 			const date = item.date.toLocaleDateString('ru-RU', { month: 'long', day:"numeric", year: "numeric"});
 			const ago = getPassedDaysText(item.date)
-			return str + `<a href="${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
+			return str + `<a href="/aar/viewer.html?aar=${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
 		}, "");
 		$(`${this.$popup} .modal-aar-container`).html(
 			`<details>
@@ -465,7 +475,7 @@ var GridViewClass = function () {
 			`<details>
 				<summary>Брифинг</summary>
 				${data.briefing}
-			</details>`			
+			</details>`
 		);
 
 		const missionVersions = data.versions.reduce((str, item) => {
@@ -482,7 +492,7 @@ var GridViewClass = function () {
 			`<details>
 				<summary>Версии (${data.versions.length})</summary>
 				${missionVersions}
-			</details>`			
+			</details>`
 		);
 		$(this.$popup).css("display","block");
 		$(this.$popup).scrollTop(0);
@@ -953,7 +963,18 @@ function init() {
 			mission.last_played_date = aar.last_played_date;
 			mission.played_times = aar.timesPlayed;
 			mission.aars = aar.links;
-			
+
+			// -- Handle excluded terrains
+			if (EXCLUDED_TERRAINS.includes(mission.terrain)) {
+				mission.tags.push(FIX_NEEDED_TAG);
+			}
+
+			// -- Handle era tag
+			const eraTag = mission.mission_date.split("-")[0].substring(0, 3).concat("0");
+			if (mission.tags.indexOf(eraTag) === -1 && eraTag != "") {
+				mission.tags = [eraTag].concat(mission.tags);
+			}
+
 			MissionsInfo.push(mission);
 		}
 
@@ -990,8 +1011,8 @@ function normalizeMissionTitle(name) {
 
 function reduceMissions(missions) {
 	/**
-	 * Reduces list of missions by finding the latest mission (by creation date) with 
-	 * the same core title (w/o COXX prefix and version suffix). 
+	 * Reduces list of missions by finding the latest mission (by creation date) with
+	 * the same core title (w/o COXX prefix and version suffix).
 	 * Adds similar missions to 'versions'.
 	 */
 	const reducedMap = {};
@@ -1016,7 +1037,7 @@ function reduceMissions(missions) {
 		}
 
 		// -- Update existing
-		let reduced = reducedMap[name];		
+		let reduced = reducedMap[name];
 		if (new Date(reduced.creation_date) <= new Date(m.creation_date)) {
 			m.versions = ([version].concat(reduced.versions)).sort(orderByCreationDate)
 			m.reduced_name = name;
@@ -1026,7 +1047,6 @@ function reduceMissions(missions) {
 			continue;
 		}
 
-		
 		// -- Append version
 		reduced.versions.push(version);
 		reduced.versions = reduced.versions.sort(orderByCreationDate)
@@ -1067,6 +1087,7 @@ function getPassedDaysText(date) {
 
 	return text
 }
+
 
 $( document ).ready(function () {
 	console.log("KEK Ready");
