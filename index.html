@@ -11,7 +11,7 @@
 		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 		crossorigin="anonymous"></script>
 		<script src="MissionsInfo.js"></script>
-		<script src="src/validator.js"></script>
+		<script src="Media.js"></script>
 		<script src="src/app.js"></script>
 	</head>
 	<body>
@@ -24,19 +24,20 @@
 				<p class="modal-terrain">at Example terrain</p>
 				<p class="modal-tags"></p>
 				<img id="overview_img" src="" />
-				<div class="modal-overview-container"></div>
+				<div id="modal-overview-container" class="modal-subcontainer"></div>
 				<!-- <img id="map_shot" width="256px" src="" /> -->
-				<div class="modal-aar-container"></div>
-				<div class="modal-briefing">Example text</div>
-				<div class="modal-versions-container"></div>
+				<div id="modal-briefing" class="modal-subcontainer">Example text</div>
+				<div id="modal-aar-container" class="modal-subcontainer"></div>
+				<div id="modal-media-container" class="modal-subcontainer"></div>
+				<div id="modal-versions-container" class="modal-subcontainer"></div>
 			</div>
 		</div>
 
 		<div id="header">
 			<div id="header-title">
 				<span><a href="https://tacticalshift.github.io" style="text-decoration: none; color: inherit;">tS</a></span> <tt id='header-sans'>Операции</tt>
-				<button id="header-btn-up" title="Вернуться наверх">Наверх!</button>
-				<button id="header-btn-select-random" title="Выбрать случайную миссию (с учетом фильтров)">Мне повезет!</button>
+				<button id="header-btn-up" class="header-btn" title="Вернуться наверх">Наверх!</button>
+				<button id="header-btn-select-random" class="header-btn" title="Выбрать случайную миссию (с учетом фильтров)">Мне повезет!</button>
 			</div>
 		</div>
 

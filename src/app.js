@@ -1,4 +1,6 @@
 // TODO:
+// - use Reduced_name as mission ID
+// - Add reset for filter fields
 
 
 const TagsMarkdown = {
@@ -37,8 +39,9 @@ const EXCLUDED_TERRAINS = [
 	"vt5"
 ];
 
-const FIX_NEEDED_TAG = "FIX NEEDED"
-const AAR_CONFIG_URL = "/aar/aarListConfig.ini"
+const FIX_NEEDED_TAG = "FIX NEEDED";
+//const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini";
+const AAR_CONFIG_URL = "/aar/aarListConfig.ini";
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -442,7 +445,6 @@ var GridViewClass = function () {
 			((data.mission_date == 'Unknown') ? "" : ` в ${data.mission_date.split('-')[0]} году`) +
 			` | до ${data.player_count} игроков` +
 			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`)
-
 		);
 		$(`${this.$popup} span[class='modal-guid']`).text(
 			`[GUID:${data.id}]` +
@@ -453,30 +455,48 @@ var GridViewClass = function () {
 		$(`${this.$popup} p[class='modal-tags']`).html(this.tags_compileTagsHTML(data.tags, false, true));
 		$(`${this.$popup} #overview_img`).attr("src", data.overview_img || "imgs/emptyoverview.jpg");
 		// $(`${this.$popup} #map_shot`).attr("src", data.map_shot || "");
-		$(`${this.$popup} .modal-overview-container`).html(
-			`<details open>
+
+		let overviewContainerHTML = "";
+		if (data.overview != "") {
+			overviewContainerHTML = `<details open>
 				<summary>Описание</summary>
 				${data.overview}
-			</details>`
-		);
+			</details>`;
+		}
+		$(`#modal-overview-container`).html(overviewContainerHTML);
 
-		const aarElements = data.aars.reduce((str, item) => {
-			const date = item.date.toLocaleDateString('ru-RU', { month: 'long', day:"numeric", year: "numeric"});
-			const ago = getPassedDaysText(item.date)
-			return str + `<a href="/aar/viewer.html?aar=${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
-		}, "");
-		$(`${this.$popup} .modal-aar-container`).html(
-			`<details>
-				<summary>After Action Reports (${data.played_times})</summary>
-				${aarElements}
-			</details>`
-		)
-		$(`${this.$popup} .modal-briefing`).html(
+		$(`#modal-briefing`).html(
 			`<details>
 				<summary>Брифинг</summary>
 				${data.briefing}
 			</details>`
 		);
+
+		let aarContainerHTML = "";
+		if (data.aars.length > 0) {
+			const aarElements = data.aars.reduce((str, item) => {
+				const date = item.date.toLocaleDateString('ru-RU', { month: 'long', day:"numeric", year: "numeric"});
+				const ago = getPassedDaysText(item.date)
+				return str + `<a href="/aar/viewer.html?aar=${item.link}" target="_blank"><span>${date}</span> <span>${ago}</span></a>`;
+			}, "");
+			aarContainerHTML = `<details>
+				<summary>After Action Reports (${data.played_times})</summary>
+				${aarElements}
+			</details>`;
+		}
+		$(`#modal-aar-container`).html(aarContainerHTML);
+
+		let mediaContainerHTML = "";
+		if (data.media.length > 0) {
+			const mediaElements = data.media.reduce((str, item) => {
+				return str + `<iframe width="49%" height="240" src=${item.link}></iframe>`
+			}, "");
+			mediaContainerHTML = `<details>
+				<summary>Медиа (${data.media.length})</summary>
+				${mediaElements}
+			</details>`;
+		}
+		$(`#modal-media-container`).html(mediaContainerHTML);
 
 		const missionVersions = data.versions.reduce((str, item) => {
 			const date = item.creation_date.toISOString().split('T')[0]
@@ -488,7 +508,7 @@ var GridViewClass = function () {
 				</span>
 			</div>`
 		}, "");
-		$(`${this.$popup} .modal-versions-container`).html(
+		$(`#modal-versions-container`).html(
 			`<details>
 				<summary>Версии (${data.versions.length})</summary>
 				${missionVersions}
@@ -965,15 +985,20 @@ function init() {
 			mission.aars = aar.links;
 
 			// -- Handle excluded terrains
-			if (EXCLUDED_TERRAINS.includes(mission.terrain)) {
+			if (EXCLUDED_TERRAINS.includes(mission.terrain) && !mission.tags.includes(FIX_NEEDED_TAG)) {
 				mission.tags.push(FIX_NEEDED_TAG);
 			}
 
 			// -- Handle era tag
-			const eraTag = mission.mission_date.split("-")[0].substring(0, 3).concat("0");
-			if (mission.tags.indexOf(eraTag) === -1 && eraTag != "") {
-				mission.tags = [eraTag].concat(mission.tags);
+			if (mission.mission_date != "Unknown") {
+				const eraTag = mission.mission_date.split("-")[0].substring(0, 3).concat("0");
+				if (!mission.tags.includes(eraTag) && eraTag != "") {
+					mission.tags = [eraTag].concat(mission.tags);
+				}
 			}
+
+			// -- Handle media
+			mission.media = [].concat(MISSION_MEDIA.filter(m=>m.mission == mission.reduced_name));
 
 			MissionsInfo.push(mission);
 		}
