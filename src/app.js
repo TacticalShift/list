@@ -1,8 +1,4 @@
 // TODO:
-// + use Reduced_name as mission ID
-// + Copy URL with comma separated filters
-// + Add reset for filter fields
-
 
 const TagsMarkdown = {
     "SPECOPS": {        bg: "#8ab62f", text: "whitesmoke", "tooltip": "Спец. операция силами небольшой группы спецназа" },
@@ -41,8 +37,8 @@ const EXCLUDED_TERRAINS = [
 ];
 
 const FIX_NEEDED_TAG = "FIX NEEDED";
-const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini";
-//const AAR_CONFIG_URL = "/aar/aarListConfig.ini";
+//const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini";
+const AAR_CONFIG_URL = "/aar/aarListConfig.ini";
 
 var GridModelClass = function (data) {
 	this.data = [...data];
