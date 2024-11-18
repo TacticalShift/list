@@ -45,40 +45,45 @@
 			<div max-width="512px">
 				<table id="grid-filter">
 					<thead>
-						<th class="clickable" colspan="2">
+						<th class="clickable" colspan="3">
 							<span class="filter-title">Фильтры</span>
 							<span class="filter-reset" title="Сбросить" action="reset">&times;</span>
 						</th>
 					</thead>
 					<tbody>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="title" >
 							<td>По наименованию</td>
-							<td filter-type="title" class="td-filter-inputs"><input type="text" /></td>
+							<td class="td-filter-inputs"><input type="text" /></td>
+							<td><span class="filter-reset-btn">×</span></td>
 						</tr>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="terrain" >
 							<td>По карте</td>
-							<td filter-type="terrain" class="td-filter-inputs">
+							<td class="td-filter-inputs">
 								<select></select>
 							</td>
+							<td><span class="filter-reset-btn">×</span></td>
 						</tr>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="slotsFrom" >
 							<td>Кол-во слотов, &gt;=</td>
-							<td filter-type="slots-gte" class="td-filter-inputs"><input type="number" /></td>
+							<td class="td-filter-inputs"><input type="number" /></td>
+							<td><span class="filter-reset-btn">×</span></td>
 						</tr>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="slotsTo" >
 							<td>Кол-во слотов, &lt;= </td>
-							<td filter-type="slots-lte" class="td-filter-inputs"><input type="number" /></td>
+							<td class="td-filter-inputs"><input type="number" /></td>
+							<td><span class="filter-reset-btn">×</span></td>
 						</tr>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="tags" >
 							<td>По тегам</td>
-							<td filter-type="tags" class="td-filter-inputs"></td>
+							<td class="td-filter-inputs"></td>
+							<td><span class="filter-reset-btn">×</span></td>
 						</tr>
-						<tr class="filter-line">
+						<tr class="filter-line" filter-type="unplayed" >
 							<td>Не игралась больше 3 месяцев</td>
-							<td filter-type="unplayed" class="td-filter-inputs"><input type="checkbox" /></td>
+							<td class="td-filter-inputs"><input type="checkbox" /></td>
 						</tr>
 						<tr style="text-align: right" class="filter-line">
-							<td colspan="2" >
+							<td colspan="3" >
 								<button id="btn-filter-url" class="btn-filter" title="Copy URL">Скопировать</button>
 								<button id="btn-reset-filter" class="btn-filter">Сбросить</button>
 								<!-- <button id="btn-filter" class="btn-filter btn-filter-100">Filter</button> -->

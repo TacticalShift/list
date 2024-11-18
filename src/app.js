@@ -1,6 +1,7 @@
 // TODO:
-// - use Reduced_name as mission ID
-// - Add reset for filter fields
+// + use Reduced_name as mission ID
+// + Copy URL with comma separated filters
+// + Add reset for filter fields
 
 
 const TagsMarkdown = {
@@ -40,8 +41,8 @@ const EXCLUDED_TERRAINS = [
 ];
 
 const FIX_NEEDED_TAG = "FIX NEEDED";
-//const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini";
-const AAR_CONFIG_URL = "/aar/aarListConfig.ini";
+const AAR_CONFIG_URL = "https://tacticalshift.ru/aar/aarListConfig.ini";
+//const AAR_CONFIG_URL = "/aar/aarListConfig.ini";
 
 var GridModelClass = function (data) {
 	this.data = [...data];
@@ -216,7 +217,7 @@ var GridModelClass = function (data) {
 		if (items.length == 0) { return; };
 
 		let item = items[Math.floor(Math.random() * items.length)];
-		this.refreshMissionDetails(item.id);
+		this.refreshMissionDetails(item.reduced_name);
 	};
 
 	/* Update view */
@@ -233,9 +234,9 @@ var GridModelClass = function (data) {
 			return;
 		}
 
-		let mData = this.data.find(e => e.id == id);
+		let mData = this.data.find(e => e.reduced_name == id);
 		this.view.modal_showPopup(mData);
-		this.updateURL(mData.id);
+		this.updateURL(mData.reduced_name);
 	};
 
 	this.updateURL = function (guid) {
@@ -304,8 +305,8 @@ var GridViewClass = function () {
 	this.$filter_headTitle = "#grid-filter thead .filter-title";
 	this.$filter_headBtnClose = "#grid-filter thead .filter-reset";
 
-	this.$filter_terrain = "#grid-filter tr td[filter-type='terrain'] select";
-	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
+	this.$filter_terrain = "#grid-filter tr[filter-type='terrain'] select";
+	this.$filter_tags = "#grid-filter tr[filter-type='tags'] .td-filter-inputs";
 	this.$filter_lines = ".filter-line";
 
 	this.header_columns = ["title","tags","player_count","terrain"];
@@ -356,7 +357,7 @@ var GridViewClass = function () {
 
 			$(this.$grid).append(
 				this.$grid_item_mission
-					.replace("$id", info.id)
+					.replace("$id", info.reduced_name)
 					.replace("$overview_img", info.overview_img)
 					.replace("$title", title)
 					.replace("$overview", info.overview)
@@ -447,7 +448,7 @@ var GridViewClass = function () {
 			((data.author == 'Unknown') ? "" : ` | by <b>${data.author}</b>, ${data.creation_date}`)
 		);
 		$(`${this.$popup} span[class='modal-guid']`).text(
-			`[GUID:${data.id}]` +
+			`[GUID:${data.reduced_name}]` +
 			`[Filename:${data.filename}]` +
 			`[Created:${data.creation_date}]` +
 			(data.played_times > 0 ? `[Played:${data.last_played_date.toISOString().split('T')[0]}]` : "")
@@ -566,17 +567,19 @@ var GridControllerClass = function () {
 
 	this.$filter_head = "#grid-filter thead th";
 	this.$filter_headResetBtn = "#grid-filter thead .filter-reset"
-	this.$filter_tags = "#grid-filter tr td[filter-type='tags']";
+	this.$filter_tags = "#grid-filter tr[filter-type='tags'] .td-filter-inputs";
 	this.$filter_copyURL = "#btn-filter-url";
 	this.$filter_resetFitler = "#btn-reset-filter";
 	this.$filter_doFilter = "#btn-filter";
 	this.$filter_lines = ".filter-line";
 
-	this.$filter_byTitle = "td[filter-type='title'] input";
-	this.$filter_byTerrain = "td[filter-type='terrain'] select";
-	this.$filter_bySlotsFrom = "td[filter-type='slots-gte'] input";
-	this.$filter_bySlotsTo = "td[filter-type='slots-lte'] input";
-	this.$filter_unplayed = "td[filter-type='unplayed'] input";
+	this.$filter_byTitle = "tr[filter-type='title'] input";
+	this.$filter_byTerrain = "tr[filter-type='terrain'] select";
+	this.$filter_bySlotsFrom = "tr[filter-type='slotsFrom'] input";
+	this.$filter_bySlotsTo = "tr[filter-type='slotsTo'] input";
+	this.$filter_unplayed = "tr[filter-type='unplayed'] input";
+
+	this.$filter_resetSingle = ".filter-line .filter-reset-btn";
 
 	this.removeEvents = function () {
 		$(this.$btn_seeMore).off();
@@ -611,6 +614,12 @@ var GridControllerClass = function () {
 				} else {
 					$(controller.$filter_lines).fadeIn(250);
 				}
+			});
+
+			$(this.$filter_resetSingle).on("click", this, function (event) {
+				const controller = event.data;
+				const targetFilter = event.target.parentElement.parentElement.getAttribute("filter-type");
+				controller.updateAndFilter({[targetFilter]: (targetFilter == "tags") ? [] : "" });
 			});
 
 			$(this.$filter_byTitle).on("change",  this, function (event) {
@@ -669,7 +678,6 @@ var GridControllerClass = function () {
 			$(this.$scroll_top).on("click", this, (event)=> {
 				$("#wrapper").animate({scrollTop: 0})
 			})
-
 
 			/* Modal window */
 			$(this.$popup).on("click", this, function (event) {
@@ -765,32 +773,36 @@ var GridControllerClass = function () {
 		let params = this.collectFilterParams();
 		let entries = Object.entries(addParams);
 
-		entries.forEach(function (e) {
-			let key = e[0];
-			let value = e[1];
+		for (let entry of entries) {
+			const key = entry[0];
+			let value = entry[1];
 
-			if (params.hasOwnProperty(key)) {
-				let currentValue = params[key];
-				if (typeof currentValue === "object") {
-					// Array (tags)
-					let set = new Set();
-					currentValue.forEach(function (tag) { set.add(tag); });
-					value.forEach(function (tag) { set.add(tag); });
-
-					value = Array.from(set);
-				} else {
-					// String or number - just overwrite
+			// -- In case of tags - update selected list with new tags
+			if (params.hasOwnProperty(key) && typeof params[key] === "object") {
+				const currentTags = params[key];
+				if (value.length == 0) {
+					params[key] = value;
+					continue;
 				}
+
+				const set = new Set();
+				for (let tag of currentTags) {
+					set.add(tag);
+				}
+				for (let tag of value) {
+					set.add(tag);
+				}
+				value = Array.from(set);
 			}
 
 			params[key] = value;
-		});
-
+		}
 		return params;
 	};
 
 	this.updateFilter = function (addParams) {
 		// Updates filter's UI with update params (selected tags and stuff)
+
 		let params = this.updatedFilterParams(addParams);
 
 		// Update UI
@@ -823,6 +835,10 @@ var GridControllerClass = function () {
 		this.model.filterBy(this.collectFilterParams());
 	}
 
+	this.resetFilter = function (filterName) {
+		$()
+	}
+
 	this.copyFilteredURL = function () {
 		let params = this.collectFilterParams();
 		let entries = Object.entries(params);
@@ -838,19 +854,15 @@ var GridControllerClass = function () {
 			if (typeof value === "object") {
 				// Array (tags)
 				let strTags = encodeURI(value.join(","));
-				urlParams.push(`${key}=[${strTags}]`);
+				urlParams.push(`${key}=${strTags}`);
 			} else {
 				let strParam = encodeURI(value);
-				urlParams.push(`${key}=${value}`);
+				urlParams.push(`${key}=${strParam}`);
 			}
 		});
 
-		let url = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + urlParams.join("&");
-        sTemp = "<input id=\"copy_to_clipboard\" value=\"" + url + "\" />"
-        $("body").append(sTemp);
-        $("#copy_to_clipboard").select();
-        document.execCommand("copy");
-        $("#copy_to_clipboard").remove();
+		const url = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + urlParams.join("&");
+        navigator.clipboard.writeText(url)
 	};
 
 	this.setUpFilterFromURL = function () {
@@ -864,7 +876,7 @@ var GridControllerClass = function () {
 
 				if (validParam == "tags") {
 					let tags = urlParams.get(validParam);
-					params[validParam] = tags.substring(1, tags.length - 1).split(",")
+					params[validParam] = tags.split(",")
 				} else {
 					params[validParam] = urlParams.get(validParam);
 				}

@@ -213,6 +213,7 @@ td {
 	padding: 3px;
 }
 
+
 .btn-see-more {
 	color: #252525;
 	cursor:pointer;
@@ -277,6 +278,16 @@ td {
 .td-inactive-tag {
 	color: #333!important;
 	background-color: #cbcbcb!important;
+}
+
+.filter-reset-btn {
+	cursor: pointer;
+	font-size: x-large;
+	color: #aaa;
+	transition: transform 0.2s;
+}
+.filter-reset-btn:hover {
+	color: #000;
 }
 
 .btn-filter {
