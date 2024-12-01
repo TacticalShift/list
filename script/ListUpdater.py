@@ -84,10 +84,10 @@ def read_settings():
 def check_dirs_exists(*dir_descriptor):
     """Checks working directories to exists"""
     result = True
-    for d,name in dir_descriptor:
+    for d, name in dir_descriptor:
         if not os.path.exists(d) or not os.path.isdir(d):
             result = False
-            print('%s directory %s not found!', name, d)
+            print('%s directory %s not found!' % (name, d))
     
     return result 
 
@@ -462,6 +462,7 @@ def main():
 
     # Look for new missions and parse 'em
     if check_dirs_exists((src_dir, "Source")):
+        print("Checking %s source dir" % src_dir)
         new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
 
         parse_new_missions(
@@ -472,13 +473,13 @@ def main():
             src_dir, cache_dir,
             new_broken_missions, unpbo_app, broken=True
         )
-            
         STATS['new'] = len(new_missions)
         STATS['new_broken'] = len(new_broken_missions)
         STATS['broken'] = len(os.listdir(os.path.join(cache_dir, BROKEN_MISSIONS_DIR)))
 
     if check_dirs_exists((cache_dir,"Cache"), (output_dir,"Output"), (default_content_dir,"Default content")):
         # Compose cached files into a new one
+        print("Composing using cache %s dir" % cache_dir);
         compose_mission_list(cache_dir, output_dir, default_content_dir)
 
 
