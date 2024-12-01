@@ -92,7 +92,7 @@ def check_dirs_exists(*dir_descriptor):
     return result 
 
 
-def list_filenames_in_dir(directory, extension, subdir=''):
+def list_filenames_in_dir(directory: str, extension: str, subdir: str ='') -> list[str]:
     """Lists all filenames of given extension in given dir and subdir"""
     mask = (f"{directory}{os.sep}*.{extension}"
             if subdir == '' else
@@ -106,7 +106,7 @@ def list_filenames_in_dir(directory, extension, subdir=''):
     return files
 
 
-def get_new_missions(cache_dir, src_dir):
+def get_new_missions(cache_dir, src_dir) -> tuple[list[str]]:
     """Analyzes content of the source and cached dirs, finds filenames that
     are present in Source dir and not in cached dir.
     Also marks files that in Source/fix_needed dir but are in Cached
@@ -128,7 +128,6 @@ def get_new_missions(cache_dir, src_dir):
         )
         os.remove(filename)
 
-
     cached_files = list_filenames_in_dir(cache_dir, CACHED_FILE_EXTENSION)
     cached_broken_files = list_filenames_in_dir(
         cache_dir, CACHED_FILE_EXTENSION, BROKEN_MISSIONS_DIR
@@ -139,8 +138,9 @@ def get_new_missions(cache_dir, src_dir):
         src_dir, RAW_FILE_EXTENSION, BROKEN_MISSIONS_DIR
     )
 
-    new_files = []
-    new_broken_files = []
+    new_files: list[str] = []
+    new_broken_files: list[str] = []
+    deleted_files: list[str] = []
 
     for src_file in source_files:
         if src_file not in cached_files:
@@ -155,7 +155,13 @@ def get_new_missions(cache_dir, src_dir):
             if src_broken_file in cached_files:
                 invalidate_cached_file(cache_dir, src_broken_file)
 
-    return new_files, new_broken_files
+    for cached_file in cached_files:
+        if not cached_file in source_files and not cached_file in source_broken_files:
+            deleted_files.append(cached_file)
+            print(f'Mission have been deleted! {cached_file}')
+            invalidate_cached_file(cache_dir, cached_file)
+
+    return new_files, new_broken_files, deleted_files
 
 
 def parse_new_missions(src_dir, cache_dir,
@@ -463,7 +469,7 @@ def main():
     # Look for new missions and parse 'em
     if check_dirs_exists((src_dir, "Source")):
         print("Checking %s source dir" % src_dir)
-        new_missions, new_broken_missions = get_new_missions(cache_dir, src_dir)
+        new_missions, new_broken_missions, deleted_missions = get_new_missions(cache_dir, src_dir)
 
         parse_new_missions(
             src_dir, cache_dir,
@@ -476,6 +482,7 @@ def main():
         STATS['new'] = len(new_missions)
         STATS['new_broken'] = len(new_broken_missions)
         STATS['broken'] = len(os.listdir(os.path.join(cache_dir, BROKEN_MISSIONS_DIR)))
+        STATS['deleted'] = len(deleted_missions)
 
     if check_dirs_exists((cache_dir,"Cache"), (output_dir,"Output"), (default_content_dir,"Default content")):
         # Compose cached files into a new one
