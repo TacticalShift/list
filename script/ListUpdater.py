@@ -10,6 +10,7 @@ import re
 import sys
 import subprocess
 import shutil
+from datetime import datetime
 
 
 SETTINGS_FILE = "settings.ini"
@@ -88,8 +89,8 @@ def check_dirs_exists(*dir_descriptor):
         if not os.path.exists(d) or not os.path.isdir(d):
             result = False
             print('%s directory %s not found!' % (name, d))
-    
-    return result 
+
+    return result
 
 
 def list_filenames_in_dir(directory: str, extension: str, subdir: str ='') -> list[str]:
@@ -193,7 +194,6 @@ def parse_new_missions(src_dir, cache_dir,
         target_img = os.path.join(from_dir, OVERVIEW_IMAGE)
         if not os.path.exists(target_img):
             return os.path.join(to_dir, DEFAULT_OVERVIEW_IMAGE)
-
 
         if filecmp.cmp(target_img, PATHS['default_content']):
             return os.path.join(to_dir, DEFAULT_OVERVIEW_IMAGE)
@@ -422,6 +422,9 @@ def compose_mission_list(cache_dir, output_dir, default_content_dir):
                 file_content.update(json.load(patch_file))
 
         totals.append(file_content)
+
+    # Re-sort by creation date
+    totals.sort(key=lambda e: datetime.fromisoformat(e['creation_date']), reverse=True)
 
     # Delete output dir content
     img_dir = os.path.join(output_dir, OVERVIEW_IMAGE_DIR)
