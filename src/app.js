@@ -979,18 +979,16 @@ function init() {
 			const reduced_name = mission.reduced_name;
 
 			// --- Look for AARs with same reduced name
-			if (!aarMap.hasOwnProperty(reduced_name)) {
-				mission.last_played_date = null;
-				mission.played_times = 0;
-				mission.aars = [];
-				continue;
+			mission.last_played_date = null;
+			mission.played_times = 0;
+			mission.aars = [];
+			if (aarMap.hasOwnProperty(reduced_name)) {
+				// -- Link AARs to mission
+				const aar = aarMap[reduced_name];
+				mission.last_played_date = aar.last_played_date;
+				mission.played_times = aar.timesPlayed;
+				mission.aars = aar.links;
 			}
-
-			// -- Link AARs to mission
-			const aar = aarMap[reduced_name];
-			mission.last_played_date = aar.last_played_date;
-			mission.played_times = aar.timesPlayed;
-			mission.aars = aar.links;
 
 			// -- Handle excluded terrains
 			if (EXCLUDED_TERRAINS.includes(mission.terrain) && !mission.tags.includes(FIX_NEEDED_TAG)) {
@@ -1010,6 +1008,8 @@ function init() {
 
 			MissionsInfo.push(mission);
 		}
+
+
 
 		initGridApp()
 	})
