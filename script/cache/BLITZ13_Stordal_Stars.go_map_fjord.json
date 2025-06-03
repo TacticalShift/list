@@ -1,0 +1,19 @@
+{
+    "id": "ead7cacdf4c08ff62a774b32d4200576",
+    "filename": "BLITZ13_Stordal_Stars.go_map_fjord",
+    "title": "BLITZ20 Stordal Stars ",
+    "author": "ka6aH",
+    "player_count": 20,
+    "terrain": "go_map_fjord",
+    "tags": [
+        "2020",
+        "SPECOPS",
+        "WEST GEAR"
+    ],
+    "overview": "Norway MJK group assaults coastal village",
+    "overview_img": "imgs/BLITZ13_Stordal_Stars.go_map_fjord.jpg",
+    "briefing": "<h4>I. Обстановка:</h4>Норвежская группа Marinejegerkommandoen прибыла в точку RP Alpha для штурма прибрежной деревни Stordal, занимаемую боевиками-сепаратистами. <h4>А. Враждебные силы:</h4>Боевики сепаратистского движения.<br /><br />Снаряжены лёгким стрелковым вооружением и пулеметами. Возможно наличие у противника техничек с ДШК/М2 в подкреплении. Противник не ожидает атаки и находится преимущественно в домах.<br /><br /><h4>Б. Дружественные силы:</h4>Специальная группа Marinejegerkommandoen<br /><br />1'1<br />   RED FT<br />   BLUE FT<br />   GREEN FT<h4>II. Задание:</h4>1. Уничтожить противника в западной части Stordal<br />2. Захватить коммуникационное снаряжение на точке COMMS<br />3. Отступить на точку выхода LIGHTHOUSE<br /><br /><h4>III. Выполнение:</h4>Высадитесь на западном побережье н.п. Stordal. Выполнение задач в последовательности, описанной в пункте II. <h4>IV. Поддержка:</h4>1x RHIB M2 (11 мест)<br />2x RHIB (14 мест)<br /><br />Доукомплекты, поддержка FARP и CCP не предусмотрены. <h4>V. Сигналы:</h4>SUP NET 51 Mhz<br /><br />1'1 - SR CH 1<br /><h4>VI. Замечания:</h4>Доп. снаряжение в лодках. ",
+    "map_shot": "",
+    "mission_date": "2025-03-22",
+    "creation_date": "2025-04-10"
+}
